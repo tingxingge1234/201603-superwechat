@@ -1407,7 +1407,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				String filename = expressionAdapter.getItem(position);
+				 String filename = expressionAdapter.getItem(position);
 				try {
 					// 文字输入框可见时，才可输入表情
 					// 按住说话可见，不让输入表情
