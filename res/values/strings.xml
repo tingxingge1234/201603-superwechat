@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">HuanXin UI Demo</string>
+    <string name="app_name">superwechat</string>
     <string name="text_ack_msg">Read</string>
     <string name="text_delivered_msg">Delivered</string>
     <string name="back">Back</string>
@@ -295,4 +295,44 @@
     <string name="toast_updatenick_fail">update nickname fail!</string>
     <string name="toast_updatephoto_success">update photo success!</string>
     <string name="toast_updatephoto_fail">update photo fail!</string>
+    <string name="msg_900">msg_CONNECTION_SUCCESS</string>
+    <string name="msg_901">msg_CONNECTION_FAIL</string>
+    <string name="msg_902">msg_UPLOAD_AVATAR_SUCCESS</string>
+    <string name="msg_903">msg_UPLOAD_AVATAR_FAIL</string>
+    <string name="msg_101">msg_REGISTER_SUCCESS</string>
+    <string name="msg_102">msg_REGISTER_USERNAME_EXISTS</string>
+    <string name="msg_103">msg_REGISTER_UPLOAD_AVATAR_FAIL</string>
+    <string name="msg_104">msg_REGISTER_UPLOAD_AVATAR_SUCCESS</string>
+    <string name="msg_105">msg_REGISTER_FAIL</string>
+    <string name="msg_106">msg_UNREGISTER_SUCCESS</string>
+    <string name="msg_107">msg_UNREGISTER_FAIL</string>
+    <string name="msg_201">msg_CONTACT_FIRENDED</string>
+    <string name="msg_202">msg_CONTACT_FAIL</string>
+    <string name="msg_301">msg_GROUP_CREATE_SCUUESS</string>
+    <string name="msg_302">msg_GROUP_HXID_EXISTS</string>
+    <string name="msg_303">msg_GROUP_CREATE_FAIL</string>
+    <string name="msg_304">msg_GROUP_ADD_MEMBER_FAIL</string>
+    <string name="msg_305">msg_GROUP_ADD_MEMBER_SCUUESS</string>
+    <string name="msg_306">msg_GROUP_UNKONW</string>
+    <string name="msg_307">msg_GROUP_SAME_NAME</string>
+    <string name="msg_308">msg_GROUP_UPDATE_NAME_SUCCESS</string>
+    <string name="msg_309">msg_GROUP_UPDATE_NAME_FAIL</string>
+    <string name="msg_310">msg_GROUP_DELETE_MEMBER_SUCCESS</string>
+    <string name="msg_311">msg_GROUP_DELETE_MEMBER_FAIL</string>
+    <string name="msg_312">msg_GROUP_DELETE_SUCCESS</string>
+    <string name="msg_313">msg_GROUP_DELETE_FAIL</string>
+    <string name="msg_401">msg_LOGIN_UNKNOW_USER</string>
+    <string name="msg_402">msg_LOGIN_ERROR_PASSWORD</string>
+    <string name="msg_403">msg_LOGIN_SUCCESS</string>
+    <string name="msg_404">msg_USER_SAME_NICK</string>
+    <string name="msg_405">msg_USER_UPDATE_NICK_SUCCESS</string>
+    <string name="msg_406">msg_USER_UPDATE_NICK_FAIL</string>
+    <string name="msg_407">msg_USER_SAME_PASSWORD</string>
+    <string name="msg_408">msg_USER_UPDATE_PASSWORD_SUCCESS</string>
+    <string name="msg_409">msg_USER_UPDATE_PASSWORD_FAIL</string>
+    <string name="msg_501">msg_LOCATION_UPLOAD_SUCCESS</string>
+    <string name="msg_502">msg_LOCATION_UPLOAD_FAIL</string>
+    <string name="msg_503">msg_LOCATION_UPDATE_SUCCESS</string>
+    <string name="msg_504">msg_LOCATION_UPDATE_FAIL</string>
+    <string name="msg_999">msg_UNKNOW</string>
 </resources>

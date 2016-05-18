@@ -1407,11 +1407,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				 String filename = expressionAdapter.getItem(position);
+				String filename = expressionAdapter.getItem(position);
 				try {
 					// 文字输入框可见时，才可输入表情
 					// 按住说话可见，不让输入表情
-					if (buttonSetModeKeyboard.getVisibility() != View.VISIBLE ) {
+					if (buttonSetModeKeyboard.getVisibility() != View.VISIBLE) {
 
 						if (filename != "delete_expression" ) { // 不是删除键，显示表情
 							// 这里用的反射，所以混淆的时候不要混淆SmileUtils这个类
