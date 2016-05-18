@@ -74,6 +74,7 @@ import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.ImageUtils;
 import cn.ucai.superwechat.utils.SmileUtils;
 import cn.ucai.superwechat.utils.UserUtils;
+import cn.ucai.superwechat.utils.Utils;
 import cn.ucai.superwechat.widget.PasteEditText;
 import com.easemob.EMChatRoomChangeListener;
 import com.easemob.EMError;
@@ -739,7 +740,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			selectFileFromLocal();
 		} else if (id == R.id.btn_voice_call) { // 点击语音电话图标
 			if (!EMChatManager.getInstance().isConnected())
-				Toast.makeText(this, st1, 0).show();
+				Toast.makeText(this, st1, Toast.LENGTH_SHORT).show();
 			else{
 				startActivity(new Intent(ChatActivity.this, VoiceCallActivity.class).putExtra("username",
 						toChatUsername).putExtra("isComingCall", false));
@@ -748,7 +749,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			}
 		} else if (id == R.id.btn_video_call) { // 视频通话
 			if (!EMChatManager.getInstance().isConnected())
-				Toast.makeText(this, st1, 0).show();
+				Toast.makeText(this, st1, Toast.LENGTH_SHORT).show();
 			else{
 				startActivity(new Intent(this, VideoCallActivity.class).putExtra("username", toChatUsername).putExtra(
 						"isComingCall", false));
@@ -1412,9 +1413,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 					// 按住说话可见，不让输入表情
 					if (buttonSetModeKeyboard.getVisibility() != View.VISIBLE) {
 
-						if (filename != "delete_expression") { // 不是删除键，显示表情
+						if (filename != "delete_expression" ) { // 不是删除键，显示表情
 							// 这里用的反射，所以混淆的时候不要混淆SmileUtils这个类
-							Class clz = Class.forName("SmileUtils");
+							Class clz = Class.forName(Utils.getPackageName(getApplication())+".Utils.UtSmileUtils");
 							Field field = clz.getField(filename);
 							mEditTextContent.append(SmileUtils.getSmiledText(ChatActivity.this,
 									(String) field.get(null)));
