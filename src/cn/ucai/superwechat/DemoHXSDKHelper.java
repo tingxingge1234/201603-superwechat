@@ -49,7 +49,7 @@ import cn.ucai.superwechat.activity.MainActivity;
 import cn.ucai.superwechat.activity.VideoCallActivity;
 import cn.ucai.superwechat.activity.VoiceCallActivity;
 import cn.ucai.superwechat.domain.RobotUser;
-import cn.ucai.superwechat.domain.User;
+import cn.ucai.superwechat.domain.EMUser;
 import com.easemob.util.EMLog;
 import com.easemob.util.EasyUtils;
 
@@ -70,7 +70,7 @@ public class DemoHXSDKHelper extends HXSDKHelper {
     /**
      * contact list in cache
      */
-    private Map<String, User> contactList;
+    private Map<String, EMUser> contactList;
     
     /**
      * robot list in cache
@@ -422,7 +422,7 @@ public class DemoHXSDKHelper extends HXSDKHelper {
      *
      * @return
      */
-    public Map<String, User> getContactList() {
+    public Map<String, EMUser> getContactList() {
         if (getHXId() != null && contactList == null) {
             contactList = ((DemoHXSDKModel) getModel()).getContactList();
         }
@@ -475,14 +475,14 @@ public class DemoHXSDKHelper extends HXSDKHelper {
      *
      * @param contactList
      */
-    public void setContactList(Map<String, User> contactList) {
+    public void setContactList(Map<String, EMUser> contactList) {
         this.contactList = contactList;
     }
     
     /**
      * 保存单个user 
      */
-    public void saveContact(User user){
+    public void saveContact(EMUser user){
     	contactList.put(user.getUsername(), user);
     	((DemoHXSDKModel) getModel()).saveContact(user);
     }
@@ -536,11 +536,11 @@ public class DemoHXSDKHelper extends HXSDKHelper {
      *
      * @param contactList
      */
-    public void updateContactList(List<User> contactInfoList) {
-         for (User u : contactInfoList) {
+    public void updateContactList(List<EMUser> contactInfoList) {
+         for (EMUser u : contactInfoList) {
 			contactList.put(u.getUsername(), u);
          }
-         ArrayList<User> mList = new ArrayList<User>();
+         ArrayList<EMUser> mList = new ArrayList<EMUser>();
          mList.addAll(contactList.values());
         ((DemoHXSDKModel)getModel()).saveContactList(mList);
     }
