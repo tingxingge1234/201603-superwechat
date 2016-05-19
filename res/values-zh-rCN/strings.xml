@@ -8,6 +8,7 @@
     <string name="save">保存</string>
     <string name="button_pushtotalk">按住说话</string>
     <string name="button_send">发送</string>
+    <string name="avatar">头像</string>
     <string name="attach_smile">表情</string>
     <string name="attach_picture">图片</string>
     <string name="attach_take_pic">拍照</string>
@@ -305,6 +306,7 @@
     <string name="toast_updatenick_fail">更新昵称失败!</string>
     <string name="toast_updatephoto_success">更新头像成功!</string>
     <string name="toast_updatephoto_fail">更新头像失败!</string>
+    <string name="setServerIp">设置服务器的IP地址</string>
     <string name="msg_900">连接服务器成功</string>;
     <string name="msg_901">连接服务器失败</string>;
     <string name="msg_902">上传头像成功</string>;
