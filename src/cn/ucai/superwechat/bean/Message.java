@@ -4,7 +4,7 @@ public class Message {
 
 	boolean result;
 	int msg;
-	
+
 	public Message() {
 		super();
 	}
@@ -35,5 +35,5 @@ public class Message {
 	public String toString() {
 		return "Message [result=" + result + ", msg=" + msg + "]";
 	}
-	
+
 }

@@ -79,7 +79,7 @@ public class Avatar extends Message implements java.io.Serializable {
 				+ ", MAvatarPath=" + mavatarPath + ", MAvatarType="
 				+ mavatarType + "]";
 	}
-	
-	
+
+
 
 }
