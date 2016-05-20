@@ -63,7 +63,8 @@ public class RegisterActivity extends BaseActivity {
 	}
 
 	private void initView() {
-		userNameEditText = (EditText) findViewById(R.id.username);
+		userNameEditText = (EditText) findViewById(R.id.username
+		);
 		passwordEditText = (EditText) findViewById(R.id.password);
 		confirmPwdEditText = (EditText) findViewById(R.id.confirm_password);
 		iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
@@ -124,8 +125,9 @@ public class RegisterActivity extends BaseActivity {
 							} catch (final EaseMobException e) {
 								runOnUiThread(new Runnable() {
 									public void run() {
-										if (!RegisterActivity.this.isFinishing())
+										if (!RegisterActivity.this.isFinishing() )
 											pd.dismiss();
+
 										int errorCode=e.getErrorCode();
 										if(errorCode==EMError.NONETWORK_ERROR){
 											Toast.makeText(getApplicationContext(), getResources().getString(R.string.network_anomalies), Toast.LENGTH_SHORT).show();
