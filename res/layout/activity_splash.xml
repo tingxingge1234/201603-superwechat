@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="超级微信"
-
+            android:textColor="#000"
             android:textSize="20dip"
             android:typeface="normal"
             >
@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dip"
+            android:textColor="#000"
             android:text="2.2.5"
 
             android:textSize="20sp" >

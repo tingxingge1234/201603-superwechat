@@ -13,8 +13,14 @@
  */
 package cn.ucai.superwechat.utils;
 
+import android.content.Context;
+import android.os.Environment;
+import android.provider.LiveFolders;
+
 import com.easemob.util.EMLog;
 import com.easemob.util.PathUtil;
+
+import java.io.File;
 
 public class ImageUtils {
 //	public static String getThumbnailImagePath(String imagePath) {
@@ -41,6 +47,14 @@ public class ImageUtils {
         EMLog.d("msg", "thum image path:" + path);
         return path;
     }
-	
+
+	public static String getAvatarPath(Context context, String path) {
+		File dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		File file = new File(dir, path);
+		if (!file.exists()) {
+			file.mkdir();
+		}
+		return file.getAbsolutePath();
+	}
 	
 }
