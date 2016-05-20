@@ -41,6 +41,7 @@ import com.easemob.exceptions.EaseMobException;
 public class RegisterActivity extends BaseActivity {
 	private EditText userNameEditText;
 	private EditText passwordEditText;
+	private EditText userNikeEditText;
 	private EditText confirmPwdEditText;
 	private ImageView iv_avatar;
 	private Button btnLogin,btnRegister;
@@ -48,6 +49,10 @@ public class RegisterActivity extends BaseActivity {
 	private Activity mActivity;
 	private String avatarName;
 	OnSetAvatarListener mOnSetAvatarListener;
+	String username;
+	String pwd;
+	String nike;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,9 +88,9 @@ public class RegisterActivity extends BaseActivity {
 	}
 
 	private void initView() {
-		userNameEditText = (EditText) findViewById(R.id.username
-		);
+		userNameEditText = (EditText) findViewById(R.id.username		);
 		passwordEditText = (EditText) findViewById(R.id.password);
+		userNikeEditText = (EditText) findViewById(R.id.ed_nike);
 		confirmPwdEditText = (EditText) findViewById(R.id.confirm_password);
 		iv_avatar = (ImageView) findViewById(R.id.iv_avatar);
 		btnLogin = (Button) findViewById(R.id.btn_login);
@@ -103,20 +108,28 @@ public class RegisterActivity extends BaseActivity {
 		btnRegister.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				final String username = userNameEditText.getText().toString().trim();
-				final String pwd = passwordEditText.getText().toString().trim();
+				username = userNameEditText.getText().toString().trim();
+				pwd = passwordEditText.getText().toString().trim();
+				nike = userNameEditText.getText().toString().trim();
 				String confirm_pwd = confirmPwdEditText.getText().toString().trim();
 				if (TextUtils.isEmpty(username)) {
-					Toast.makeText(context, getResources().getString(R.string.User_name_cannot_be_empty), Toast.LENGTH_SHORT).show();
 					userNameEditText.requestFocus();
+					userNameEditText.setError(getResources().getString(R.string.User_name_cannot_be_empty));
+
 					return;
+				} else if (!username.matches("[\\w][\\w\\d_]+")) {
+					userNameEditText.requestFocus();
+					userNameEditText.setError(getResources().getString(R.string.User_name_cannot_be_wd));
+				} else if (TextUtils.isEmpty(nike)) {
+					userNikeEditText.requestFocus();
+					userNikeEditText.setError(getResources().getString(R.string.Nick_name_cannot_be_empty));
 				} else if (TextUtils.isEmpty(pwd)) {
-					Toast.makeText(context, getResources().getString(R.string.Password_cannot_be_empty), Toast.LENGTH_SHORT).show();
 					passwordEditText.requestFocus();
+					passwordEditText.setError(getResources().getString(R.string.Password_cannot_be_empty));
 					return;
 				} else if (TextUtils.isEmpty(confirm_pwd)) {
-					Toast.makeText(context, getResources().getString(R.string.Confirm_password_cannot_be_empty), Toast.LENGTH_SHORT).show();
 					confirmPwdEditText.requestFocus();
+					confirmPwdEditText.setError( getResources().getString(R.string.Confirm_password_cannot_be_empty));
 					return;
 				} else if (!pwd.equals(confirm_pwd)) {
 					Toast.makeText(context, getResources().getString(R.string.Two_input_password), Toast.LENGTH_SHORT).show();
