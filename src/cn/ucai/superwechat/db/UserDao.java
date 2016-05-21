@@ -18,8 +18,8 @@ public class UserDao extends SQLiteOpenHelper{
     public static final String TABLE_NAME = "user";
     public static final int VERSION = 1;
     public static final String DB_NAME = "user.db";
-    public UserDao(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DB_NAME, factory, VERSION);
+    public UserDao(Context context) {
+        super(context, DB_NAME, null, VERSION);
     }
 
     @Override
