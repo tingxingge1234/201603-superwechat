@@ -23,6 +23,15 @@ public class DownloadPublicGroupTask extends BaseActivity{
     Context mContext;
     String username;
     String path;
+    int pageId;
+    int pageSize;
+
+    public DownloadPublicGroupTask(Context mContext, String username, int pageId, int pageSize) {
+        this.mContext = mContext;
+        this.username = username;
+        this.pageId = pageId;
+        this.pageSize = pageSize;
+    }
 
     public DownloadPublicGroupTask(String username, Context mContext) {
         this.username = username;
@@ -34,6 +43,8 @@ public class DownloadPublicGroupTask extends BaseActivity{
         try {
             path = new ApiParams()
                     .with(I.User.USER_NAME, username)
+                    .with(I.PAGE_ID,pageId+"")
+                    .with(I.PAGE_SIZE,pageSize+"")
                     .getRequestUrl(I.REQUEST_FIND_PUBLIC_GROUPS);
         } catch (Exception e) {
             e.printStackTrace();

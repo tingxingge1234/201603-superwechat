@@ -50,6 +50,9 @@ import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.listener.OnSetAvatarListener;
+import cn.ucai.superwechat.task.DownloadAllGroupTask;
+import cn.ucai.superwechat.task.DownloadContactListTask;
+import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 import cn.ucai.superwechat.utils.CommonUtils;
 
 import com.android.volley.Response;
@@ -373,6 +376,14 @@ public class LoginActivity extends BaseActivity {
 							utils.downloadFile(response, file, false);
 						}
 					}).execute(null);
+			runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					new DownloadContactListTask(context, currentUsername).execute();
+					new DownloadAllGroupTask(currentUsername,context).execute();
+					new DownloadPublicGroupTask(context,currentUsername,I.PAGE_ID_DEFAULT,I.PAGE_SIZE_DEFAULT).execute();
+				}
+			});
 			// 处理好友和群组
 			initializeContacts();
 		} catch (Exception e) {
