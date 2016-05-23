@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.ucai.superwechat.activity;
+package cn.ucai.superwechat.fragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +49,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import cn.ucai.superwechat.activity.AddContactActivity;
+import cn.ucai.superwechat.activity.ChatActivity;
+import cn.ucai.superwechat.activity.GroupsActivity;
+import cn.ucai.superwechat.activity.MainActivity;
+import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
+import cn.ucai.superwechat.activity.PublicChatRoomsActivity;
+import cn.ucai.superwechat.activity.RobotsActivity;
 import cn.ucai.superwechat.widget.Sidebar;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper.HXSyncListener;
@@ -101,7 +108,7 @@ public class ContactlistFragment extends Fragment {
                                 refresh();
 		                    }else{
 		                        String s1 = getResources().getString(R.string.get_failed_please_check);
-		                        Toast.makeText(getActivity(), s1, 1).show();
+		                        Toast.makeText(getActivity(), s1, Toast.LENGTH_LONG).show();
 		                        progressBar.setVisibility(View.GONE);
 		                    }
 		                }
@@ -215,12 +222,12 @@ public class ContactlistFragment extends Fragment {
 				} else if (Constant.GROUP_USERNAME.equals(username)) {
 					// 进入群聊列表页面
 					startActivity(new Intent(getActivity(), GroupsActivity.class));
-				} else if(Constant.CHAT_ROOM.equals(username)){
-					//进入聊天室列表页面
-				    startActivity(new Intent(getActivity(), PublicChatRoomsActivity.class));
-				}else if(Constant.CHAT_ROBOT.equals(username)){
-					//进入Robot列表页面
-					startActivity(new Intent(getActivity(), RobotsActivity.class));
+//				} else if(Constant.CHAT_ROOM.equals(username)){
+//					//进入聊天室列表页面
+//				    startActivity(new Intent(getActivity(), PublicChatRoomsActivity.class));
+//				}else if(Constant.CHAT_ROBOT.equals(username)){
+//					//进入Robot列表页面
+//					startActivity(new Intent(getActivity(), RobotsActivity.class));
 				}else {
 					// demo中直接进入聊天页面，实际一般是进入用户详情页
 					startActivity(new Intent(getActivity(), ChatActivity.class).putExtra("userId", adapter.getItem(position).getUsername()));
