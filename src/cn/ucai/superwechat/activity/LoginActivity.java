@@ -212,6 +212,7 @@ public class LoginActivity extends BaseActivity {
 						startActivity(intent);
 
 						finish();
+						loginSucces();
 					}
 
 					@Override
@@ -245,6 +246,7 @@ public class LoginActivity extends BaseActivity {
 		pd=new ProgressDialog(LoginActivity.this);
 		UserDao dao = new UserDao(mActivity);
 		User user = dao.findUserByUserName(currentUsername);
+
 		if (user != null) {
 			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
 				loginSucces();
