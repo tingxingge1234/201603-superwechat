@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.task.DownloadAllGroupTask;
 import cn.ucai.superwechat.task.DownloadContactListTask;
 import cn.ucai.superwechat.task.DownloadPublicGroupTask;
@@ -30,7 +32,7 @@ public class SplashActivity extends BaseActivity {
 	private RelativeLayout rootLayout;
 	private TextView versionText;
 	Context context;
-
+	User user;
 	
 	private static final int sleepTime = 2000;
 
@@ -53,21 +55,16 @@ public class SplashActivity extends BaseActivity {
 	protected void onStart() {
 		super.onStart();
 		if (DemoHXSDKHelper.getInstance().isLogined()) {
-			final User user = SuperWeChatApplication.getInstance().getUser();
+			Log.e("main", "start download contact,group,public group");
+			String username = SuperWeChatApplication.getInstance().getUserName();
+			UserDao dao = new UserDao(context);
+			User user = dao.findUserByUserName(username);
 			SuperWeChatApplication instance = SuperWeChatApplication.getInstance();
 			instance.setUser(user);
-			instance.setUserName(user.getMUserName());
-			instance.setPassword(user.getMUserPassword());
-			SuperWeChatApplication.currentUserNick = user.getMUserNick();
 
-			runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					new DownloadContactListTask(context, user.getMUserName()).execute();
-					new DownloadAllGroupTask(user.getMUserName(),context).execute();
-					new DownloadPublicGroupTask(context,user.getMUserName(), I.PAGE_ID_DEFAULT,I.PAGE_SIZE_DEFAULT).execute();
-				}
-			});
+			new DownloadContactListTask(context, username).execute();
+			new DownloadAllGroupTask(username,context).execute();
+			new DownloadPublicGroupTask(context,username, I.PAGE_ID_DEFAULT,I.PAGE_SIZE_DEFAULT).execute();
 		}
 		new Thread(new Runnable() {
 			public void run() {
