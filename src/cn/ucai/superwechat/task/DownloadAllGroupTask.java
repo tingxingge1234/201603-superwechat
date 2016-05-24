@@ -24,7 +24,7 @@ public class DownloadAllGroupTask extends BaseActivity {
     String username;
     String path;
 
-    public DownloadAllGroupTask(String username, Context mContext) {
+    public DownloadAllGroupTask(Context mContext,String username) {
         this.username = username;
         this.mContext = mContext;
         initPath();
