@@ -64,7 +64,6 @@ public class UserUtils {
 
 	public static void setUserBeanAvatar(String username, NetworkImageView imageView) {
 		Contact contact = getUserBeanInfo(username);
-//		Log.e("error", "contact=" + contact.getMContactCname());
 		if (contact != null && contact.getMContactCname() != null) {
 			setUserAvatar(getAvatarPath(username),imageView);
 		}

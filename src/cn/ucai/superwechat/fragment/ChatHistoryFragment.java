@@ -101,7 +101,7 @@ public class ChatHistoryFragment extends Fragment {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				EMContact emContact = adapter.getItem(position);
 				if (adapter.getItem(position).getUsername().equals(SuperWeChatApplication.getInstance().getUserName()))
-					Toast.makeText(getActivity(), st, 0).show();
+					Toast.makeText(getActivity(), st, Toast.LENGTH_SHORT).show();
 				else {
 					// 进入聊天页面
 					  Intent intent = new Intent(getActivity(), ChatActivity.class);
