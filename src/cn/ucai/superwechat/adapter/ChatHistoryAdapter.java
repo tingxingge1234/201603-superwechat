@@ -28,6 +28,8 @@ import android.widget.TextView.BufferType;
 
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.SmileUtils;
+
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMContact;
 import com.easemob.chat.EMConversation;

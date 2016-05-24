@@ -28,6 +28,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -367,7 +368,7 @@ public class LoginActivity extends BaseActivity {
 			// ** manually load all local groups and
 			EMGroupManager.getInstance().loadAllGroups();
 			EMChatManager.getInstance().loadAllConversations();
-			final OkHttpUtils utils = new OkHttpUtils<>();
+			final OkHttpUtils<Message> utils = new OkHttpUtils<Message>();
 			utils.url(SuperWeChatApplication.SERVER_ROOT)
 					.addParam(I.KEY_REQUEST,I.REQUEST_DOWNLOAD_AVATAR)
 					.addParam(I.AVATAR_TYPE,currentUsername)

@@ -16,7 +16,9 @@ package cn.ucai.superwechat.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -271,6 +273,8 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	        copyUserList.addAll(userList);
 	    }
 	}
-	
+
+
 
 }
+

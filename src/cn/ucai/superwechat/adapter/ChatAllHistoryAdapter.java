@@ -13,6 +13,7 @@
  */
 package cn.ucai.superwechat.adapter;
 
+import java.net.NetworkInterface;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,8 @@ import android.widget.TextView.BufferType;
 
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.utils.UserUtils;
+
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatRoom;
 import com.easemob.chat.EMConversation;
@@ -82,7 +85,7 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 			holder.unreadLabel = (TextView) convertView.findViewById(R.id.unread_msg_number);
 			holder.message = (TextView) convertView.findViewById(R.id.message);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
-			holder.avatar = (ImageView) convertView.findViewById(R.id.avatar);
+			holder.avatar = (NetworkImageView) convertView.findViewById(R.id.avatar);
 			holder.msgState = convertView.findViewById(R.id.msg_state);
 			holder.list_item_layout = (RelativeLayout) convertView.findViewById(R.id.list_item_layout);
 			convertView.setTag(holder);
@@ -107,7 +110,8 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
             EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);
             holder.name.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
 		}else {
-		    UserUtils.setUserAvatar(getContext(), username, holder.avatar);
+//		    UserUtils.setUserAvatar(getContext(), username, holder.avatar);
+			UserUtils.setUserBeanAvatar(username,holder.avatar);
 			if (username.equals(Constant.GROUP_USERNAME)) {
 				holder.name.setText("群聊");
 
@@ -123,7 +127,8 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 					holder.name.setText(username);
 				}
 			}else{
-				UserUtils.setUserNick(username, holder.name);
+//				UserUtils.setUserNick(username, holder.name);
+				UserUtils.setUserBeanNick(username,holder.name);
 			}
 		}
 
@@ -219,7 +224,7 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		/** 最后一条消息的时间 */
 		TextView time;
 		/** 用户头像 */
-		ImageView avatar;
+		NetworkImageView avatar;
 		/** 最后一条消息的发送状态 */
 		View msgState;
 		/** 整个list中每一行总布局 */

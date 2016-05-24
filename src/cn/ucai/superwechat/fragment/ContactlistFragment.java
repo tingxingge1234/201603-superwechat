@@ -23,8 +23,10 @@ import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -50,6 +52,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.activity.AddContactActivity;
 import cn.ucai.superwechat.activity.ChatActivity;
@@ -97,6 +100,8 @@ public class ContactlistFragment extends Fragment {
     private Contact toBeProcessUser;
     private String toBeProcessUsername;
 	ArrayList<Contact> mContactList;
+
+	contactlistBroadcastReceiver mcontactlistBroadcastReceiver;
 
 
 	class HXContactSyncListener implements HXSDKHelper.HXSyncListener {
@@ -163,7 +168,9 @@ public class ContactlistFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 		return inflater.inflate(R.layout.fragment_contact_list, container, false);
+
 	}
 
 	@Override
@@ -177,6 +184,7 @@ public class ContactlistFragment extends Fragment {
 		sidebar = (Sidebar) getView().findViewById(R.id.sidebar);
 		sidebar.setListView(listView);
 		mContactList = new ArrayList<Contact>();
+		registerBroadcastReceiver();
 		setListener();
 
 		//黑名单列表
@@ -455,6 +463,9 @@ public class ContactlistFragment extends Fragment {
 		if(contactInfoSyncListener != null){
 			((DemoHXSDKHelper)HXSDKHelper.getInstance()).getUserProfileManager().removeSyncContactInfoListener(contactInfoSyncListener);
 		}
+		if (mcontactlistBroadcastReceiver != null) {
+			getActivity().unregisterReceiver(mcontactlistBroadcastReceiver);
+		}
 		super.onDestroy();
 	}
 	
@@ -551,5 +562,18 @@ public class ContactlistFragment extends Fragment {
 	    	outState.putBoolean(Constant.ACCOUNT_REMOVED, true);
 	    }
 	    
+	}
+
+	class contactlistBroadcastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			refresh();
+		}
+	}
+	public void registerBroadcastReceiver () {
+		mcontactlistBroadcastReceiver = new contactlistBroadcastReceiver();
+		IntentFilter filter = new IntentFilter("update_contact_list");
+		getActivity().registerReceiver(mcontactlistBroadcastReceiver, filter);
 	}
 }
