@@ -62,10 +62,14 @@ import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
 import cn.ucai.superwechat.activity.PublicChatRoomsActivity;
 import cn.ucai.superwechat.activity.RobotsActivity;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.utils.UserUtils;
 import cn.ucai.superwechat.widget.Sidebar;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper.HXSyncListener;
+
+import com.android.volley.Response;
 import com.easemob.chat.EMContactManager;
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
@@ -366,6 +370,15 @@ public class ContactlistFragment extends Fragment {
 		pd.setMessage(st1);
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
+		try {
+			String path = new ApiParams()
+                    .with(I.Contact.USER_NAME, SuperWeChatApplication.getInstance().getUserName())
+                    .with(I.Contact.CU_NAME, tobeDeleteUser.getMContactCname())
+                    .getRequestUrl(I.REQUEST_DELETE_CONTACT);
+			((MainActivity) getActivity()).executeRequest(new GsonRequest<Boolean>(path, Boolean.class, responseDelContactListener(tobeDeleteUser), ((MainActivity) getActivity()).errorListener()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -395,6 +408,19 @@ public class ContactlistFragment extends Fragment {
 			}
 		}).start();
 
+	}
+
+	private Response.Listener<Boolean> responseDelContactListener(final Contact tobeDeleteUser) {
+		return new Response.Listener<Boolean>() {
+			@Override
+			public void onResponse(Boolean aBoolean) {
+				if (aBoolean) {
+					SuperWeChatApplication.getInstance().getUserList().remove(tobeDeleteUser);
+					SuperWeChatApplication.getInstance().getContactList().remove(tobeDeleteUser);
+					getActivity().sendStickyBroadcast(new Intent("update_contact_list"));
+				}
+			}
+		};
 	}
 
 	/**
