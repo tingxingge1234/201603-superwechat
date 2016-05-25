@@ -95,6 +95,16 @@
                 android:text="@string/button_add"
                 android:textSize="14sp" />
         </RelativeLayout>
+
     </LinearLayout>
+    <TextView
+        android:id="@+id/tvSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查找无结果"
+        android:textColor="#000"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

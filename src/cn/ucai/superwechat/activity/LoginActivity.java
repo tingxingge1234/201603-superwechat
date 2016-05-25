@@ -85,36 +85,23 @@ public class LoginActivity extends BaseActivity {
 
 	private Button mbtnLogin;
 	private Button mbtnRegister;
-	Context context;
 	ProgressDialog pd;
 	Activity mActivity;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-
-		initView();
+		mActivity = this;
+		pd = new ProgressDialog(LoginActivity.this);
 		setListener();
 		if (SuperWeChatApplication.getInstance().getUserName() != null) {
 			usernameEditText.setText(SuperWeChatApplication.getInstance().getUserName());
 		}
 	}
-	private void initView() {
-		mbtnLogin = (Button) findViewById(R.id.btn_login);
-		mbtnRegister = (Button) findViewById(R.id.btn_register);
-
-
-
-		context = this;
-		mActivity = this;
-
-		pd = new ProgressDialog(LoginActivity.this);
-	}
 
 	private void setListener() {
 		setNameChangeListener();
-		setonLoginListener();
 		setonRegisterListener();
+		setonLoginListener();
 	}
 
 	private void setNameChangeListener() {
@@ -148,15 +135,13 @@ public class LoginActivity extends BaseActivity {
 
 	}
 
-
-
 	/**
 	 * 登录
 	 * 
 	 *
 	 */
 	public void setonLoginListener() {
-		mbtnLogin.setOnClickListener(new View.OnClickListener() {
+				findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (!CommonUtils.isNetWorkConnected(mActivity)) {
@@ -175,18 +160,6 @@ public class LoginActivity extends BaseActivity {
 					return;
 				}
 				showProgressShow();
-//				progressShow = true;
-//				pd=new ProgressDialog(LoginActivity.this);
-//				pd.setCanceledOnTouchOutside(false);
-//				pd.setOnCancelListener(new OnCancelListener() {
-//
-//					@Override
-//					public void onCancel(DialogInterface dialog) {
-//						progressShow = false;
-//					}
-//				});
-//				pd.setMessage(getString(R.string.Is_landing));
-//				pd.show();
 
 				final long start = System.currentTimeMillis();
 				// 调用sdk登陆方法登陆聊天服务器
@@ -246,7 +219,18 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void showProgressShow() {
+		progressShow = true;
+				pd=new ProgressDialog(LoginActivity.this);
+				pd.setCanceledOnTouchOutside(false);
+				pd.setOnCancelListener(new OnCancelListener() {
 
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						progressShow = false;
+					}
+				});
+				pd.setMessage(getString(R.string.Is_landing));
+				pd.show();
 	}
 
 	private void loginAppServer() {
@@ -344,10 +328,10 @@ public class LoginActivity extends BaseActivity {
 	 *
 	 */
 	public void setonRegisterListener() {
-		mbtnRegister.setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.btn_register).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivityForResult(new Intent(context, RegisterActivity.class), 0);
+				startActivityForResult(new Intent(mActivity, RegisterActivity.class), 0);
 			}
 		});
 
@@ -390,9 +374,9 @@ public class LoginActivity extends BaseActivity {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					new DownloadContactListTask(context, currentUsername).execute();
-					new DownloadAllGroupTask(context, currentUsername).execute();
-					new DownloadPublicGroupTask(context,currentUsername,I.PAGE_ID_DEFAULT,I.PAGE_SIZE_DEFAULT).execute();
+					new DownloadContactListTask(mActivity, currentUsername).execute();
+					new DownloadAllGroupTask(mActivity, currentUsername).execute();
+					new DownloadPublicGroupTask(mActivity,currentUsername,I.PAGE_ID_DEFAULT,I.PAGE_SIZE_DEFAULT).execute();
 				}
 			});
 			// 处理好友和群组
