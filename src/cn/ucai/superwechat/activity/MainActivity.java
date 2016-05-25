@@ -13,12 +13,6 @@
  */
 package cn.ucai.superwechat.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,7 +20,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.security.keystore.UserNotAuthenticatedException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -39,20 +32,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import cn.ucai.superwechat.I;
-import cn.ucai.superwechat.SuperWeChatApplication;
-import cn.ucai.superwechat.applib.controller.HXSDKHelper;
-import cn.ucai.superwechat.DemoHXSDKHelper;
-import cn.ucai.superwechat.bean.Contact;
-import cn.ucai.superwechat.data.ApiParams;
-import cn.ucai.superwechat.data.GsonRequest;
-import cn.ucai.superwechat.db.InviteMessgeDao;
-import cn.ucai.superwechat.domain.InviteMessage;
-import cn.ucai.superwechat.fragment.ChatAllHistoryFragment;
-import cn.ucai.superwechat.fragment.ContactlistFragment;
-import cn.ucai.superwechat.fragment.SettingsFragment;
-import cn.ucai.superwechat.parse.ParseManager;
-import cn.ucai.superwechat.utils.CommonUtils;
+import com.android.volley.Response;
 import com.easemob.EMCallBack;
 import com.easemob.EMConnectionListener;
 import com.easemob.EMError;
@@ -71,21 +51,40 @@ import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.EMMessage.Type;
 import com.easemob.chat.TextMessageBody;
-import cn.ucai.superwechat.Constant;
-import cn.ucai.superwechat.R;
-import cn.ucai.superwechat.db.EMUserDao;
-import cn.ucai.superwechat.domain.EMUser;
-import cn.ucai.superwechat.utils.Utils;
-
 import com.easemob.util.EMLog;
 import com.easemob.util.HanziToPinyin;
 import com.easemob.util.NetUtils;
-import com.squareup.okhttp.internal.Util;
 import com.umeng.analytics.MobclickAgent;
-import com.android.volley.Response;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
+import cn.ucai.superwechat.db.EMUserDao;
+import cn.ucai.superwechat.db.InviteMessgeDao;
+import cn.ucai.superwechat.domain.EMUser;
+import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.domain.InviteMessage.InviteMesageStatus;
+import cn.ucai.superwechat.fragment.ChatAllHistoryFragment;
+import cn.ucai.superwechat.fragment.ContactlistFragment;
+import cn.ucai.superwechat.fragment.SettingsFragment;
+import cn.ucai.superwechat.utils.CommonUtils;
+import cn.ucai.superwechat.utils.Utils;
 
 public class MainActivity extends BaseActivity implements EMEventListener {
 	Activity mContext;
+
 	protected static final String TAG = "MainActivity";
 	// 未读消息textview
 	private TextView unreadLabel;
@@ -119,7 +118,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mContext= this;
+		mContext = this;
 		
 		if (savedInstanceState != null && savedInstanceState.getBoolean(Constant.ACCOUNT_REMOVED, false)) {
 			// 防止被移除后，没点确定按钮然后按了home键，长期在后台又进app导致的crash
@@ -242,7 +241,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                 groupUser.setHeader("");
                 userlist.put(Constant.GROUP_USERNAME, groupUser);
                 
-                 // 添加"聊天室"
+//                 // 添加"聊天室"
 //                EMUser chatRoomItem = new EMUser();
 //                String strChatRoom = context.getString(R.string.chat_room);
 //                chatRoomItem.setUsername(Constant.CHAT_ROOM);
@@ -250,7 +249,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 //                chatRoomItem.setHeader("");
 //                userlist.put(Constant.CHAT_ROOM, chatRoomItem);
                 
-                // 添加"Robot"
+//                // 添加"Robot"
 //        		EMUser robotUser = new EMUser();
 //        		String strRobot = context.getString(R.string.robot_chat);
 //        		robotUser.setUsername(Constant.CHAT_ROBOT);
@@ -528,13 +527,14 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 	 */
 	public class MyContactListener implements EMContactListener {
 
+
 		@Override
 		public void onContactAdded(List<String> usernameList) {			
 			// 保存增加的联系人
 			Map<String, EMUser> localUsers = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList();
 			HashMap<String, Contact> userList = SuperWeChatApplication.getInstance().getUserList();
-			ArrayList<String> toAddUserNames = new ArrayList<String>();
 			Map<String, EMUser> toAddUsers = new HashMap<String, EMUser>();
+			ArrayList<String> toAddUserName = new ArrayList<String>();
 			boolean isAdd = false;
 			for (String username : usernameList) {
 				EMUser user = setUserHead(username);
@@ -543,77 +543,76 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 					userDao.saveContact(user);
 					isAdd = true;
 				}
-				if (userList.containsKey(username)) {
-					toAddUserNames.add(username);
+				if (!userList.containsKey(username)) {
+					toAddUserName.add(username);
 				}
 				toAddUsers.put(username, user);
 			}
 			localUsers.putAll(toAddUsers);
-			for (String name : toAddUserNames) {
+			for (String name:usernameList) {
 				if (isAdd) {
 					try {
-						String path = new ApiParams()
-                                .with(I.Contact.USER_NAME, SuperWeChatApplication.getInstance().getUserName())
-                                .with(I.Contact.CU_NAME, name)
-                                .getRequestUrl(I.REQUEST_ADD_CONTACT);
-						executeRequest(new GsonRequest<Contact>(path,Contact.class,
-								responeAddContactListener(),errorListener()));
+						String path = new ApiParams().with(I.Contact.USER_NAME,SuperWeChatApplication.getInstance().getUserName())
+								.with(I.Contact.CU_NAME,name)
+								.getRequestUrl(I.REQUEST_ADD_CONTACT);
+						executeRequest(new GsonRequest<Contact>(path,Contact.class,responseAddContactListener(),errorListener()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
+
 			// 刷新ui
 			if (currentTabIndex == 1)
 				contactListFragment.refresh();
 
 		}
 
-		private Response.Listener<Contact> responeAddContactListener() {
+		private Response.Listener<Contact> responseAddContactListener() {
 			return new Response.Listener<Contact>() {
 				@Override
 				public void onResponse(Contact contact) {
-					HashMap<String, Contact> userList = SuperWeChatApplication.getInstance().getUserList();
-					ArrayList<Contact> contactList = SuperWeChatApplication.getInstance().getContactList();
-					if (!userList.containsKey(contact.getMContactCname())) {
-						userList.put(contact.getMContactCname(), contact);
-						contactList.add(contact);
-						sendStickyBroadcast(new Intent("update_contact_list"));
-						Utils.showToast(mContext,Utils.getResourceString(mContext,contact.getMsg()),Toast.LENGTH_SHORT);
+					if (contact!=null&&contact.isResult()) {
+						HashMap<String, Contact> userList = SuperWeChatApplication.getInstance().getUserList();
+						ArrayList<Contact> contactList = SuperWeChatApplication.getInstance().getContactList();
+						if (!userList.containsKey(contact.getMContactCname())) {
+							userList.put(contact.getMContactCname(), contact);
+							contactList.add(contact);
+							sendStickyBroadcast(new Intent("update_contact_list"));
+						}
 					}
+					Utils.showToast(mContext,Utils.getResourceString(mContext,contact.getMsg()),Toast.LENGTH_LONG);
 				}
 			};
 		}
-
 
 		@Override
 		public void onContactDeleted(final List<String> usernameList) {
 			// 被删除
 			Map<String, EMUser> localUsers = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList();
 			HashMap<String, Contact> userList = SuperWeChatApplication.getInstance().getUserList();
-			ArrayList<String> toDelUserList = new ArrayList<String>();
+			ArrayList<String> toDeleteUserNames = new ArrayList<String>();
 			for (String username : usernameList) {
 				localUsers.remove(username);
 				userDao.deleteContact(username);
 				inviteMessgeDao.deleteMessage(username);
 				if (userList.containsKey(username)) {
-					toDelUserList.add(username);
+					toDeleteUserNames.add(username);
 				}
 			}
-			if (toDelUserList.size() > 0) {
-				for (String name : toDelUserList) {
+			if (toDeleteUserNames.size()>0) {
+				for (String name : toDeleteUserNames) {
 					try {
 						String path = new ApiParams()
-                                .with(I.Contact.USER_NAME, SuperWeChatApplication.getInstance().getUserName())
-                                .with(I.Contact.CU_NAME, name)
+                                .with(I.Contact.USER_NAME,SuperWeChatApplication.getInstance().getUserName())
+                                .with(I.Contact.CU_NAME,name)
                                 .getRequestUrl(I.REQUEST_DELETE_CONTACT);
-						executeRequest(new GsonRequest<Boolean>(path, Boolean.class, responseDelContactListener(name), errorListener()));
+						executeRequest(new GsonRequest<Boolean>(path,Boolean.class,responseDeleteContactListener(name),errorListener()));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
-
 			runOnUiThread(new Runnable() {
 				public void run() {
 					// 如果正在与此用户的聊天页面
@@ -633,11 +632,11 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 
 		}
 
-		private Response.Listener<Boolean> responseDelContactListener(final String name) {
+		private Response.Listener<Boolean> responseDeleteContactListener(final String name) {
 			return new Response.Listener<Boolean>() {
 				@Override
-				public void onResponse(Boolean aBoolean) {
-					if (aBoolean) {
+				public void onResponse(Boolean response) {
+					if (response) {
 						HashMap<String, Contact> userList = SuperWeChatApplication.getInstance().getUserList();
 						if (userList.containsKey(name)) {
 							ArrayList<Contact> contactList = SuperWeChatApplication.getInstance().getContactList();
@@ -669,7 +668,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			msg.setReason(reason);
 			Log.d(TAG, username + "请求加你为好友,reason: " + reason);
 			// 设置相应status
-			msg.setStatus(InviteMessage.InviteMesageStatus.BEINVITEED);
+			msg.setStatus(InviteMesageStatus.BEINVITEED);
 			notifyNewIviteMessage(msg);
 
 		}
@@ -687,7 +686,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			msg.setFrom(username);
 			msg.setTime(System.currentTimeMillis());
 			Log.d(TAG, username + "同意了你的好友请求");
-			msg.setStatus(InviteMessage.InviteMesageStatus.BEAGREED);
+			msg.setStatus(InviteMesageStatus.BEAGREED);
 			notifyNewIviteMessage(msg);
 
 		}
@@ -878,7 +877,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			msg.setGroupName(groupName);
 			msg.setReason(reason);
 			Log.d(TAG, applyer + " 申请加入群聊：" + groupName);
-			msg.setStatus(InviteMessage.InviteMesageStatus.BEAPPLYED);
+			msg.setStatus(InviteMesageStatus.BEAPPLYED);
 			notifyNewIviteMessage(msg);
 		}
 

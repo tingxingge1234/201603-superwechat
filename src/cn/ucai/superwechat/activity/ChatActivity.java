@@ -875,7 +875,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
 
 		} else {
-			intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+			intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		}
 		startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
 	}
@@ -890,7 +890,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			intent.setType("image/*");
 
 		} else {
-			intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+			intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 		}
 		startActivityForResult(intent, REQUEST_CODE_LOCAL);
 	}
@@ -1302,7 +1302,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 按住说话listener
 	 * 
 	 */
-	class PressToSpeakListen implements View.OnTouchListener {
+	class PressToSpeakListen implements OnTouchListener {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			switch (event.getAction()) {
@@ -1699,7 +1699,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			break;
 		}
 		
-		if(forward_msg.getChatType() == EMMessage.ChatType.ChatRoom){
+		if(forward_msg.getChatType() == ChatType.ChatRoom){
 			EMChatManager.getInstance().leaveChatRoom(forward_msg.getTo());
 		}
 	}
