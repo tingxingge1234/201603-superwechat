@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import cn.ucai.superwechat.utils.UserUtils;
 import com.easemob.EMValueCallBack;
@@ -117,22 +118,27 @@ public class ParseManager {
      * @param user
      */
     private static void setUserHearder(EMUser user) {
-        String headerName = null;
+		Log.e("error", "parsemanager" + user);
+		String headerName = null;
         if (!TextUtils.isEmpty(user.getNick())) {
             headerName = user.getNick();
         } else {
             headerName = user.getUsername();
         }
-        if (Character.isDigit(headerName.charAt(0))) {
-            user.setHeader("#");
-        } else {
-            user.setHeader(HanziToPinyin.getInstance().get(headerName.substring(0, 1)).get(0).target.substring(0, 1)
-                    .toUpperCase());
-            char header = user.getHeader().toLowerCase().charAt(0);
-            if (header < 'a' || header > 'z') {
-                user.setHeader("#");
-            }
-        }
+		Log.e("error", "parsemanager" + headerName);
+		if (headerName != null) {
+			if (Character.isDigit(headerName.charAt(0))) {
+				user.setHeader("#");
+			} else {
+				user.setHeader(HanziToPinyin.getInstance().get(headerName.trim().substring(0, 1)).get(0).target.substring(0, 1)
+						.toUpperCase());
+				char header = user.getHeader().toLowerCase().charAt(0);
+				if (header < 'a' || header > 'z') {
+					user.setHeader("#");
+				}
+			}
+		}
+
     }
 	
 	public void asyncGetCurrentUserInfo(final EMValueCallBack<EMUser> callback){

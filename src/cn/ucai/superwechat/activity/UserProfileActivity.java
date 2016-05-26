@@ -37,6 +37,7 @@ import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.data.MultipartRequest;
 import cn.ucai.superwechat.data.RequestManager;
+import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.listener.OnSetAvatarListener;
 import cn.ucai.superwechat.utils.ImageUtils;
@@ -245,6 +246,11 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 							Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatenick_success), Toast.LENGTH_SHORT)
 									.show();
 							tvNickName.setText(nickName);
+							SuperWeChatApplication.currentUserNick = nickName;
+							User user = SuperWeChatApplication.getInstance().getUser();
+							user.setMUserNick(nickName);
+							UserDao dao = new UserDao(mContext);
+							dao.updateUser(user);
 						}
 					});
 				}
