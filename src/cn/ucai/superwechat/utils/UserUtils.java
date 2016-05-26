@@ -47,7 +47,7 @@ public class UserUtils {
 		return  contact;
 	}
 
-	private static String getAvatarPath(String username) {
+	public static String getAvatarPath(String username) {
 		if (username==null||username.isEmpty())return null;
 		return I.REQUEST_DOWNLOAD_AVATAR_USER + username;
 	}
