@@ -6,10 +6,14 @@ import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.print.PrintHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -303,4 +307,29 @@ public class ChatAllHistoryFragment extends Fragment implements OnClickListener 
     @Override
     public void onClick(View v) {        
     }
+
+	class ContactListChangeReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			adapter.notifyDataSetChanged();
+		}
+
+
+}
+
+	private ContactListChangeReceiver mContactListChangeReceiver;
+	private void registerContactListChangedReceiver() {
+		mContactListChangeReceiver = new ContactListChangeReceiver();
+		IntentFilter intentFilter = new IntentFilter("update_contact_list");
+		getActivity().registerReceiver(mContactListChangeReceiver, intentFilter);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (mContactListChangeReceiver != null) {
+			getActivity().unregisterReceiver(mContactListChangeReceiver);
+		}
+	}
 }

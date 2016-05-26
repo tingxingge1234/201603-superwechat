@@ -324,4 +324,5 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
             notiyfyByFilter = false;
         }
 	}
+
 }

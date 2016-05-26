@@ -176,7 +176,6 @@ public class LoginActivity extends BaseActivity {
 						if (!progressShow) {
 							return;
 						}
-
 						loginAppSever();
 						// 登陆成功，保存用户名密码
 						SuperWeChatApplication.getInstance().setUserName(currentUsername);
@@ -227,7 +226,7 @@ public class LoginActivity extends BaseActivity {
 	private void loginAppSever() {
 		UserDao dao = new UserDao(mContext);
 		User user = dao.findUserByUserName(currentUsername);
-		Log.e("main", "loginAppServer user" + user);
+		Log.e("error", "loginAppServer user" + user);
 		if (user != null) {
 			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
 				loginSuccess();
@@ -251,7 +250,7 @@ public class LoginActivity extends BaseActivity {
 			@Override
 			public void onResponse(User user) {
 				if (user.isResult()) {
-					Log.e("main", "responseListener user" + user);
+					Log.e("error", "responseListener user" + user);
 					saveUser(user);
 					//User user1 = SuperWeChatApplication.getInstance().getUser();
 					user.setMUserPassword(MD5.getData(user.getMUserPassword()));
@@ -267,6 +266,7 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void saveUser(User user) {
+		Log.e("error", "login user" + user);
 		SuperWeChatApplication instance = SuperWeChatApplication.getInstance();
 		instance.setUser(user);
 		Log.e("mian","login user="+user);

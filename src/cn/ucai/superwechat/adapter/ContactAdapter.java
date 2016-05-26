@@ -43,6 +43,7 @@ import cn.ucai.superwechat.utils.Utils;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.easemob.chat.EMConversation;
 import com.easemob.util.EMLog;
 
 /**
@@ -114,10 +115,11 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		}
 		//显示申请与通知item
 		if(username.equals(Constant.NEW_FRIENDS_USERNAME)){
+			int unreadMsgCountTotal = 0;
 		    holder.nameTextview.setText(user.getMUserNick());
 		    holder.avatar.setDefaultImageResId(R.drawable.new_friends_icon);
 			holder.avatar.setImageUrl("", RequestManager.getImageLoader());
-			if(user.getMUserUnreadMsgCount() > 0){
+			if(user.getMUserUnreadMsgCount() > 0||unreadMsgCountTotal>0){
 			    holder.unreadMsgView.setVisibility(View.VISIBLE);
 //			    holder.unreadMsgView.setText(user.getUnreadMsgCount()+"");
 			}else{

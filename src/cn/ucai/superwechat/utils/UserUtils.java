@@ -151,6 +151,7 @@ public class UserUtils {
 	 */
 	public static void setCurrentUserBeanNick(TextView textView){
 		User user = SuperWeChatApplication.getInstance().getUser();
+		Log.e("error", "user" + user);
 		if(textView != null&&user!=null&&user.getMUserNick()!=null){
 			textView.setText(user.getMUserNick());
 		}
