@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.activity.BlacklistActivity;
 import cn.ucai.superwechat.activity.DiagnoseActivity;
@@ -44,6 +46,7 @@ import com.easemob.chat.EMChatOptions;
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.bean.User;
 
 /**
  * 设置界面
@@ -369,6 +372,9 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 						instance.getGroupList().clear();
 						instance.getUserList().clear();
 						instance.getPublicGroupList().clear();
+//						User user = new User();
+//						instance.setUser(user);
+//						Log.e("error", "logout user" +user);
 						// 重新显示登陆页面
 						((MainActivity) getActivity()).finish();
 						startActivity(new Intent(getActivity(), LoginActivity.class));

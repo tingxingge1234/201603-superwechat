@@ -279,6 +279,7 @@ public class LoginActivity extends BaseActivity {
 		try {
 			// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
 			// ** manually load all local groups and
+
 			EMGroupManager.getInstance().loadAllGroups();
 			EMChatManager.getInstance().loadAllConversations();
 			final OkHttpUtils<Message> utils = new OkHttpUtils<>();

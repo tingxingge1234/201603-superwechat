@@ -269,8 +269,9 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private void updateUserAvatar() {
 		dialog = ProgressDialog.show(this, getString(R.string.dl_update_photo), getString(R.string.dl_waiting));
 		dialog.show();
-		File file = new File(ImageUtils.getAvatarPath(mContext, I.AVATAR_TYPE_USER_PATH), avatarName + I.AVATAR_SUFFIX_JPG);
+		File file = new File(ImageUtils.getAvatarPath(mContext, I.AVATAR_TYPE_USER_PATH),avatarName+I.AVATAR_SUFFIX_JPG);
 		Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+		multipartBody=getImageBytes(bitmap);
 		try {
 			String url = new ApiParams()
                     .with(I.AVATAR_TYPE, I.AVATAR_TYPE_USER_PATH)
@@ -280,6 +281,13 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	public byte[] getImageBytes(Bitmap bmp){
+		if(bmp==null)return null;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.JPEG,100,baos);
+		byte[] imageBytes = baos.toByteArray();
+		return imageBytes;
 	}
 
 	private Response.Listener<Message> responseUpdateUserAvatarListener() {
