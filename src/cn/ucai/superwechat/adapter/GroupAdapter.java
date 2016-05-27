@@ -13,6 +13,7 @@
  */
 package cn.ucai.superwechat.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,15 +32,16 @@ import android.widget.TextView;
 
 import com.easemob.chat.EMGroup;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.activity.BaseActivity;
+import cn.ucai.superwechat.bean.Group;
 
-public class GroupAdapter extends ArrayAdapter<EMGroup> {
+public class GroupAdapter extends BaseAdapter {
 
 	private LayoutInflater inflater;
 	private String newGroup;
 	private String addPublicGroup;
 
-	public GroupAdapter(Context context, int res, List<EMGroup> groups) {
-		super(context, res, groups);
+	public GroupAdapter(Context context, int res, ArrayList<Group> groups) {
 		this.inflater = LayoutInflater.from(context);
 		newGroup = context.getResources().getString(R.string.The_new_group_chat);
 		addPublicGroup = context.getResources().getString(R.string.add_public_group_chat);
@@ -110,7 +113,7 @@ public class GroupAdapter extends ArrayAdapter<EMGroup> {
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.row_group, null);
 			}
-			((TextView) convertView.findViewById(R.id.name)).setText(getItem(position - 3).getGroupName());
+			((TextView) convertView.findViewById(R.id.name)).setText(getItem(position - 3).);
 
 		}
 
@@ -119,7 +122,18 @@ public class GroupAdapter extends ArrayAdapter<EMGroup> {
 
 	@Override
 	public int getCount() {
+
 		return super.getCount() + 3;
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return null;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return 0;
 	}
 
 }

@@ -17,6 +17,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -26,13 +27,26 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 
+import java.io.File;
+
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.Group;
+import cn.ucai.superwechat.bean.Message;
+import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
+import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.listener.OnSetAvatarListener;
+import cn.ucai.superwechat.utils.ImageUtils;
+import cn.ucai.superwechat.utils.Utils;
 
 public class NewGroupActivity extends BaseActivity {
 	private EditText groupNameEditText;
@@ -45,6 +59,7 @@ public class NewGroupActivity extends BaseActivity {
 	ImageView miv_group_avatar;
 	OnSetAvatarListener mOnSetAvatarListener;
 	NewGroupActivity mContext;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -72,7 +87,7 @@ public class NewGroupActivity extends BaseActivity {
 	}
 
 	private void setGroupIconClickListener() {
-		findViewById(R.id.ll_linear).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.layout_group_avatar).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				mOnSetAvatarListener = new OnSetAvatarListener(mContext, R.id.layout_new_group, getAvatarName(), I.AVATAR_TYPE_GROUP_PATH);
@@ -160,15 +175,18 @@ public class NewGroupActivity extends BaseActivity {
 						memberIds[i] = Contacts[i].getMContactId() + "";
 					}
 				}
+				EMGroup emGroup;
 				try {
 					if(checkBox.isChecked()){
 						//创建公开群，此种方式创建的群，可以自由加入
 						//创建公开群，此种方式创建的群，用户需要申请，等群主同意后才能加入此群
-						EMGroupManager.getInstance().createPublicGroup(groupName, desc, members, true,200);
+						emGroup=EMGroupManager.getInstance().createPublicGroup(groupName, desc, members, true,200);
 					}else{
 						//创建不公开群
-						EMGroupManager.getInstance().createPrivateGroup(groupName, desc, members, memberCheckbox.isChecked(),200);
+						emGroup=EMGroupManager.getInstance().createPrivateGroup(groupName, desc, members, memberCheckbox.isChecked(),200);
 					}
+					String hxid = emGroup.getGroupId();
+					createNewGroupAppServer(hxid, groupName, desc, Contacts);
 					runOnUiThread(new Runnable() {
 						public void run() {
 							progressDialog.dismiss();
@@ -187,6 +205,94 @@ public class NewGroupActivity extends BaseActivity {
 
 			}
 		}).start();
+
+	}
+
+	private void createNewGroupAppServer(String hxid, String groupName, String desc, final Contact[] contacts) {
+		User user = SuperWeChatApplication.getInstance().getUser();
+		File file = new File(ImageUtils.getAvatarPath(mActivity, I.AVATAR_TYPE_USER_PATH),avatarName+I.AVATAR_SUFFIX_JPG);
+		boolean isInvites = memberCheckbox.isChecked();
+		boolean isPublic = checkBox.isChecked();
+			final OkHttpUtils<Group> utils = new OkHttpUtils<Group>();
+			utils.url(SuperWeChatApplication.SERVER_ROOT)
+					.addParam(I.KEY_REQUEST,I.REQUEST_CREATE_GROUP)
+					.addParam(I.Group.HX_ID,hxid)
+					.addParam(I.Group.NAME,groupName)
+					.addParam(I.Group.DESCRIPTION,desc)
+					.addParam(I.Group.OWNER,user.getMUserName())
+					.addParam(I.Group.IS_PUBLIC,isPublic+"")
+					.addParam(I.Group.ALLOW_INVITES,isInvites+"")
+					.addParam(I.User.USER_ID,user.getMUserId()+"")
+					.targetClass(Group.class)
+					.addFile(file)
+					.execute(new OkHttpUtils.OnCompleteListener<Group>() {
+						@Override
+						public void onSuccess(Group result) {
+							if (result.isResult()) {
+								if (contacts != null) {
+									addGroupMembers(result,contacts);
+								} else {
+									SuperWeChatApplication.getInstance().getGroupList().add(result);
+									progressDialog.dismiss();
+									setResult(RESULT_OK);
+									mContext.sendStickyBroadcast(new Intent("update_all_group"));
+									finish();
+								}
+							} else {
+								Utils.showToast(mActivity,Utils.getResourceString(mActivity,result.getMsg()),Toast.LENGTH_LONG);
+								Utils.showToast(mContext,R.string.Create_groups_Success,Toast.LENGTH_SHORT);
+								progressDialog.dismiss();
+							}
+						}
+
+
+
+						@Override
+						public void onError(String error) {
+							progressDialog.dismiss();
+							Log.e(error, "register fail,error:" + error);
+						}
+					});
+	}
+
+	private void addGroupMembers(Group group,Contact[] contacts) {
+		String userId="";
+		String userName="";
+		for (int i = 0; i <contacts.length ; i++) {
+			userId += contacts[i].getMContactId()+",";
+			userName += contacts[i].getMContactCname() + ",";
+		}
+		try {
+			String path = new ApiParams()
+                    .with(I.Member.USER_ID, userId)
+                    .with(I.Member.USER_NAME, userName)
+                    .with(I.Member.GROUP_HX_ID, group.getMGroupHxid())
+                    .getRequestUrl(I.REQUEST_ADD_GROUP_MEMBERS);
+			Log.e("error", "path" + path);
+			executeRequest(new GsonRequest<Message>(path, Message.class, responseListener(group), errorListener()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
+	private Response.Listener<Message> responseListener(final Group group) {
+		return new Response.Listener<Message>() {
+			@Override
+			public void onResponse(Message message) {
+				if (message.isResult()) {
+					SuperWeChatApplication.getInstance().getGroupList().add(group);
+					progressDialog.dismiss();
+					setResult(RESULT_OK);
+					mContext.sendStickyBroadcast(new Intent("update_all_group"));
+				} else {
+					progressDialog.dismiss();
+					Utils.showToast(mContext,R.string.Failed_to_create_groups,Toast.LENGTH_SHORT);
+				}
+				finish();
+			}
+		};
 	}
 
 	public void back(View view) {

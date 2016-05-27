@@ -31,17 +31,20 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.adapter.GroupAdapter;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.bean.Group;
+
 import com.easemob.util.EMLog;
 
 public class GroupsActivity extends BaseActivity {
 	public static final String TAG = "GroupsActivity";
 	private ListView groupListView;
-	protected List<EMGroup> grouplist;
+	protected List<Group> grouplist;
 	private GroupAdapter groupAdapter;
 	private InputMethodManager inputMethodManager;
 	public static GroupsActivity instance;
@@ -86,7 +89,7 @@ public class GroupsActivity extends BaseActivity {
 
 		instance = this;
 		inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		grouplist = EMGroupManager.getInstance().getAllGroups();
+		grouplist = SuperWeChatApplication.getInstance().getGroupList();
 		groupListView = (ListView) findViewById(R.id.list);
 		
 		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -165,7 +168,7 @@ public class GroupsActivity extends BaseActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		grouplist = EMGroupManager.getInstance().getAllGroups();
+		grouplist = SuperWeChatApplication.getInstance().getGroupList();
 		groupAdapter = new GroupAdapter(this, 1, grouplist);
 		groupListView.setAdapter(groupAdapter);
 		groupAdapter.notifyDataSetChanged();
@@ -183,7 +186,7 @@ public class GroupsActivity extends BaseActivity {
 	
 	public void refresh() {
 		if (groupListView != null && groupAdapter != null) {
-			grouplist = EMGroupManager.getInstance().getAllGroups();
+			grouplist = SuperWeChatApplication.getInstance().getGroupList();
 			groupAdapter = new GroupAdapter(GroupsActivity.this, 1,
 					grouplist);
 			groupListView.setAdapter(groupAdapter);
