@@ -13,8 +13,10 @@
  */
 package cn.ucai.superwechat.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,7 +46,7 @@ import com.easemob.util.EMLog;
 public class GroupsActivity extends BaseActivity {
 	public static final String TAG = "GroupsActivity";
 	private ListView groupListView;
-	protected List<Group> grouplist;
+	protected ArrayList<Group> grouplist;
 	private GroupAdapter groupAdapter;
 	private InputMethodManager inputMethodManager;
 	public static GroupsActivity instance;
@@ -86,25 +88,45 @@ public class GroupsActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_groups);
-
 		instance = this;
+		initView();
+		initData();
+		initListener();
+		refresh();
 		inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		grouplist = SuperWeChatApplication.getInstance().getGroupList();
-		groupListView = (ListView) findViewById(R.id.list);
-		
-		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
-		swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
-		                android.R.color.holo_orange_light, android.R.color.holo_red_light);
-		swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+		if (!HXSDKHelper.getInstance().isGroupsSyncedWithServer()) {
+			progressBar.setVisibility(View.VISIBLE);
+		} else {
+			progressBar.setVisibility(View.GONE);
+		}
+	}
+
+
+
+	private void initListener() {
+		setGroupRefreshListener();
+		setGroupListViewItemClickListener();
+		setGroupListViewTouchListener();
+		syncListener = new SyncListener();
+		HXSDKHelper.getInstance().addSyncGroupListener(syncListener);
+	}
+
+	private void setGroupListViewTouchListener() {
+		groupListView.setOnTouchListener(new OnTouchListener() {
 
 			@Override
-			public void onRefresh() {
-			    MainActivity.asyncFetchGroupsFromServer();
+			public boolean onTouch(View v, MotionEvent event) {
+				if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
+					if (getCurrentFocus() != null)
+						inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+								InputMethodManager.HIDE_NOT_ALWAYS);
+				}
+				return false;
 			}
 		});
-		
-		groupAdapter = new GroupAdapter(this, 1, grouplist);
-		groupListView.setAdapter(groupAdapter);
+	}
+
+	private void setGroupListViewItemClickListener() {
 		groupListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -120,37 +142,48 @@ public class GroupsActivity extends BaseActivity {
 					Intent intent = new Intent(GroupsActivity.this, ChatActivity.class);
 					// it is group chat
 					intent.putExtra("chatType", ChatActivity.CHATTYPE_GROUP);
-					intent.putExtra("groupId", groupAdapter.getItem(position - 3).getGroupId());
+					intent.putExtra("groupId", groupAdapter.getItem(position - 3).getMGroupId());
 					startActivityForResult(intent, 0);
 				}
 			}
 
 		});
-		groupListView.setOnTouchListener(new OnTouchListener() {
+	}
+
+	private void setGroupRefreshListener() {
+		swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
 
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-					if (getCurrentFocus() != null)
-						inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
-								InputMethodManager.HIDE_NOT_ALWAYS);
-				}
-				return false;
+			public void onRefresh() {
+				MainActivity.asyncFetchGroupsFromServer();
 			}
 		});
-		
-		progressBar = (View)findViewById(R.id.progress_bar);
-		
-		syncListener = new SyncListener();
-		HXSDKHelper.getInstance().addSyncGroupListener(syncListener);
+	}
 
-		if (!HXSDKHelper.getInstance().isGroupsSyncedWithServer()) {
-			progressBar.setVisibility(View.VISIBLE);
-		} else {
-			progressBar.setVisibility(View.GONE);
+	public void refresh(){
+		if (groupListView != null && groupAdapter != null) {
+			grouplist = SuperWeChatApplication.getInstance().getGroupList();
+			groupAdapter = new GroupAdapter(GroupsActivity.this, 1,
+					grouplist);
+			groupListView.setAdapter(groupAdapter);
+			groupAdapter.notifyDataSetChanged();
 		}
-		
-		refresh();
+	}
+
+	private void initView() {
+
+		groupListView = (ListView) findViewById(R.id.list);
+		swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+		swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+				android.R.color.holo_orange_light, android.R.color.holo_red_light);
+		progressBar = (View)findViewById(R.id.progress_bar);
+
+
+	}
+	private void initData() {
+		grouplist = SuperWeChatApplication.getInstance().getGroupList();
+		groupAdapter = new GroupAdapter(this, 1, grouplist);
+		groupListView.setAdapter(groupAdapter);
 	}
 
 	/**
@@ -180,17 +213,18 @@ public class GroupsActivity extends BaseActivity {
 			HXSDKHelper.getInstance().removeSyncGroupListener(syncListener);
 			syncListener = null;
 		}
+		if (mReceiver != null) {
+			unregisterReceiver(mReceiver);
+		}
 		super.onDestroy();
 		instance = null;
 	}
-	
-	public void refresh() {
-		if (groupListView != null && groupAdapter != null) {
-			grouplist = SuperWeChatApplication.getInstance().getGroupList();
-			groupAdapter = new GroupAdapter(GroupsActivity.this, 1,
-					grouplist);
-			groupListView.setAdapter(groupAdapter);
-			groupAdapter.notifyDataSetChanged();
+	private GroupListChangedReceiver mReceiver;
+	class GroupListChangedReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			refresh();
+
 		}
 	}
 

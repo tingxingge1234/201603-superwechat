@@ -63,19 +63,19 @@ public class NewGroupActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(cn.ucai.superwechat.R.layout.activity_new_group);
+		mContext= this;
+		setContentView(R.layout.activity_new_group);
 		initView();
 		setListener();
 	}
 
 	private void initView() {
-		mContext= this;
 		miv_group_avatar = (ImageView) findViewById(R.id.iv_group_avatar);
-		groupNameEditText = (EditText) findViewById(cn.ucai.superwechat.R.id.edit_group_name);
-		introductionEditText = (EditText) findViewById(cn.ucai.superwechat.R.id.edit_group_introduction);
-		checkBox = (CheckBox) findViewById(cn.ucai.superwechat.R.id.cb_public);
-		memberCheckbox = (CheckBox) findViewById(cn.ucai.superwechat.R.id.cb_member_inviter);
-		openInviteContainer = (LinearLayout) findViewById(cn.ucai.superwechat.R.id.ll_open_invite);
+		groupNameEditText = (EditText) findViewById(R.id.edit_group_name);
+		introductionEditText = (EditText) findViewById(R.id.edit_group_introduction);
+		checkBox = (CheckBox) findViewById(R.id.cb_public);
+		memberCheckbox = (CheckBox) findViewById(R.id.cb_member_inviter);
+		openInviteContainer = (LinearLayout) findViewById(R.id.ll_open_invite);
 
 	}
 
@@ -90,7 +90,8 @@ public class NewGroupActivity extends BaseActivity {
 		findViewById(R.id.layout_group_avatar).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				mOnSetAvatarListener = new OnSetAvatarListener(mContext, R.id.layout_new_group, getAvatarName(), I.AVATAR_TYPE_GROUP_PATH);
+				mOnSetAvatarListener = new OnSetAvatarListener(mContext, R.id.layout_group_avatar,
+						getAvatarName(), I.AVATAR_TYPE_GROUP_PATH);
 			}
 		});
 	}
@@ -99,7 +100,7 @@ public class NewGroupActivity extends BaseActivity {
 		findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String str6 = getResources().getString(cn.ucai.superwechat.R.string.Group_name_cannot_be_empty);
+				String str6 = getResources().getString(R.string.Group_name_cannot_be_empty);
 				String name = groupNameEditText.getText().toString();
 				if (TextUtils.isEmpty(name)) {
 					Intent intent = new Intent(mContext, AlertDialog.class);
@@ -107,7 +108,8 @@ public class NewGroupActivity extends BaseActivity {
 					startActivity(intent);
 				} else {
 					// 进通讯录选人
-					startActivityForResult(new Intent(mContext, GroupPickContactsActivity.class).putExtra("groupName", name), 0);
+					startActivityForResult(new Intent(mContext, GroupPickContactsActivity.class)
+							.putExtra("groupName", name), CREATE_NEW_GROUP);
 				}
 			}
 		});
@@ -136,7 +138,6 @@ public class NewGroupActivity extends BaseActivity {
 			return;
 		}
 		if (requestCode == CREATE_NEW_GROUP ) {
-			setProgressDialog();
 			//新建群组
 			createNewGroup(data);
 		} else {
@@ -148,7 +149,7 @@ public class NewGroupActivity extends BaseActivity {
 	}
 
 	private void setProgressDialog() {
-		String st1 = getResources().getString(cn.ucai.superwechat.R.string.Is_to_create_a_group_chat);
+		String st1 = getResources().getString(R.string.Is_to_create_a_group_chat);
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setMessage(st1);
 		progressDialog.setCanceledOnTouchOutside(false);
@@ -157,7 +158,7 @@ public class NewGroupActivity extends BaseActivity {
 
 	private void createNewGroup(final Intent data) {
 		setProgressDialog();
-		final String st2 = getResources().getString(cn.ucai.superwechat.R.string.Failed_to_create_groups);
+		final String st2 = getResources().getString(R.string.Failed_to_create_groups);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -210,10 +211,10 @@ public class NewGroupActivity extends BaseActivity {
 
 	private void createNewGroupAppServer(String hxid, String groupName, String desc, final Contact[] contacts) {
 		User user = SuperWeChatApplication.getInstance().getUser();
-		File file = new File(ImageUtils.getAvatarPath(mActivity, I.AVATAR_TYPE_USER_PATH),avatarName+I.AVATAR_SUFFIX_JPG);
+		File file = new File(ImageUtils.getAvatarPath(mContext, I.AVATAR_TYPE_GROUP_PATH),avatarName+I.AVATAR_SUFFIX_JPG);
 		boolean isInvites = memberCheckbox.isChecked();
 		boolean isPublic = checkBox.isChecked();
-			final OkHttpUtils<Group> utils = new OkHttpUtils<Group>();
+			OkHttpUtils<Group> utils = new OkHttpUtils<Group>();
 			utils.url(SuperWeChatApplication.SERVER_ROOT)
 					.addParam(I.KEY_REQUEST,I.REQUEST_CREATE_GROUP)
 					.addParam(I.Group.HX_ID,hxid)
@@ -223,6 +224,7 @@ public class NewGroupActivity extends BaseActivity {
 					.addParam(I.Group.IS_PUBLIC,isPublic+"")
 					.addParam(I.Group.ALLOW_INVITES,isInvites+"")
 					.addParam(I.User.USER_ID,user.getMUserId()+"")
+
 					.targetClass(Group.class)
 					.addFile(file)
 					.execute(new OkHttpUtils.OnCompleteListener<Group>() {

@@ -66,6 +66,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
     private boolean notiyfyByFilter;
 	Context mContext;
 
+
 	public ContactAdapter(Context context, int resource, List<Contact> objects) {
 		this.res = resource;
 		this.userList = objects;
@@ -200,7 +201,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 		}
 		return list.toArray(new String[list.size()]);
 	}
-	
+
 
 	public Filter getFilter() {
 		if(myFilter==null){
@@ -235,8 +236,8 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 				for(int i=0;i<count;i++){
 					final Contact user = mOriginalList.get(i);
 					String username = user.getMContactCname();
-					
-					if(username.startsWith(prefixString)){
+					String nick = UserUtils.getPinYinFromHanZi(user.getMUserNick());
+					if(username.contains(prefixString)||nick.contains(prefixString)){
 						newValues.add(user);
 					}
 					else{
