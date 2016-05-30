@@ -365,7 +365,7 @@ public class PublicGroupsActivity extends BaseActivity {
                     for(int i=0;i<count;i++){
                         final Group group = mOriginalList.get(i);
                         String username = group.getMGroupName();
-
+                        UserUtils.getPinYinFromHanZi(username);
                         if(username.contains(prefixString)){
                             newValues.add(group);
                         }
