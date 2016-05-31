@@ -14,11 +14,14 @@
 package cn.ucai.superwechat.adapter;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.jar.Attributes;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.text.LoginFilter;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,11 +33,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
+import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
+
+import com.android.volley.Response;
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.utils.UserUtils;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
@@ -53,7 +65,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(context, R.layout.row_invite_msg, null);
-			holder.avator = (ImageView) convertView.findViewById(R.id.avatar);
+			holder.avator = (NetworkImageView) convertView.findViewById(R.id.avatar);
 			holder.reason = (TextView) convertView.findViewById(R.id.message);
 			holder.name = (TextView) convertView.findViewById(R.id.name);
 			holder.status = (Button) convertView.findViewById(R.id.user_state);
@@ -82,7 +94,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			}
 			
 			holder.reason.setText(msg.getReason());
-			holder.name.setText(msg.getFrom());
+//			holder.name.setText(msg.getFrom());
 			// holder.time.setText(DateUtils.getTimestampString(new
 			// Date(msg.getTime())));
 			if (msg.getStatus() == InviteMessage.InviteMesageStatus.BEAGREED) {
@@ -123,9 +135,27 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			}
 
 			// 设置用户头像
+			UserUtils.setUserAvatar(UserUtils.getAvatarPath(msg.getFrom()),holder.avator);
+			try {
+				String path = new ApiParams()
+                        .with(I.User.USER_NAME, msg.getFrom())
+                        .getRequestUrl(I.REQUEST_FIND_USER);
+				((NewFriendsMsgActivity) context).executeRequest(new GsonRequest<User>(path, User.class, responseFindUserListener(holder.name), ((NewFriendsMsgActivity) context).errorListener()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return convertView;
+	}
+
+	private Response.Listener<User> responseFindUserListener(final TextView name) {
+		return new Response.Listener<User>() {
+			@Override
+			public void onResponse(User user) {
+				UserUtils.setUserBeanNick(user,name);
+			}
+		};
 	}
 
 	/**
@@ -173,7 +203,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 						@Override
 						public void run() {
 							pd.dismiss();
-							Toast.makeText(context, str3 + e.getMessage(), 1).show();
+							Toast.makeText(context, str3 + e.getMessage(), Toast.LENGTH_LONG).show();
 						}
 					});
 
@@ -183,7 +213,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 	}
 
 	private static class ViewHolder {
-		ImageView avator;
+		NetworkImageView avator;
 		TextView name;
 		TextView reason;
 		Button status;
