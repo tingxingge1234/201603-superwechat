@@ -18,11 +18,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -64,18 +68,25 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.adapter.ExpressionAdapter;
 import cn.ucai.superwechat.adapter.MessageAdapter;
+import cn.ucai.superwechat.bean.Member;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.domain.RobotUser;
+import cn.ucai.superwechat.task.DownloadGroupMemberTask;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.ImageUtils;
 import cn.ucai.superwechat.utils.SmileUtils;
 import cn.ucai.superwechat.utils.UserUtils;
 import cn.ucai.superwechat.utils.Utils;
 import cn.ucai.superwechat.widget.PasteEditText;
+
+import com.android.volley.Response;
 import com.easemob.EMChatRoomChangeListener;
 import com.easemob.EMError;
 import com.easemob.EMEventListener;
@@ -105,6 +116,7 @@ import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
 import com.easemob.util.PathUtil;
 import com.easemob.util.VoiceRecorder;
+import com.squareup.okhttp.internal.Util;
 
 /**
  * 聊天页面
@@ -190,6 +202,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	private boolean haveMoreData = true;
 	private Button btnMore;
 	public String playMsgId;
+	ArrayList<Member> members;
 
 	private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -211,6 +224,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		activityInstance = this;
 		initView();
 		setUpView();
+		registerGroupMemberUpdate();
 	}
 
 	/**
@@ -509,7 +523,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	}
 	
 	protected void onGroupViewCreation(){
-	    group = EMGroupManager.getInstance().getGroup(toChatUsername);
+		members = SuperWeChatApplication.getInstance().getGroupMembers().get(toChatUsername);
+		if (members != null) {
+			members = new ArrayList<Member>();
+			new DownloadGroupMemberTask(ChatActivity.this,toChatUsername).execute();
+//			try {
+//				String path = new ApiParams()
+//                        .with(I.Member.GROUP_HX_ID, toChatUsername)
+//                        .getRequestUrl(I.REQUEST_DOWNLOAD_GROUP_MEMBERS_BY_HXID);
+//				executeRequest(new GsonRequest<Member[]>(path, Member[].class, responseGroupMembersByHxidListener(), errorListener()));
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+		}
+		group = EMGroupManager.getInstance().getGroup(toChatUsername);
         
         if (group != null){
             ((TextView) findViewById(R.id.name)).setText(group.getGroupName());
@@ -521,7 +548,17 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         groupListener = new GroupListener();
         EMGroupManager.getInstance().addGroupChangeListener(groupListener);
 	}
-	
+
+//	private Response.Listener<Member[]> responseGroupMembersByHxidListener() {
+//		return new Response.Listener<Member[]>() {
+//			@Override
+//			public void onResponse(Member[] list) {
+//				members.addAll(Utils.array2List(list));
+//				adapter.notifyDataSetChanged();
+//			}
+//		};
+//	}
+
 	protected void onChatRoomViewCreation(){
         
         final ProgressDialog pd = ProgressDialog.show(this, "", "Joining......");
@@ -1469,6 +1506,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		if(groupListener != null){
 		    EMGroupManager.getInstance().removeGroupChangeListener(groupListener);
 		}
+		if (mReceiver != null) {
+			unregisterReceiver(mReceiver);
+		}
 	}
 
 	@Override
@@ -1751,6 +1791,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 	public ListView getListView() {
 		return listView;
+	}
+
+	class GroupMemberReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			adapter.notifyDataSetChanged();
+		}
+	}
+	GroupMemberReceiver mReceiver;
+	private void registerGroupMemberUpdate() {
+		mReceiver = new GroupMemberReceiver();
+		IntentFilter intentFilter = new IntentFilter("update_member_group");
+		registerReceiver(mReceiver, intentFilter);
 	}
 
 }

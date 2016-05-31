@@ -14,6 +14,7 @@ import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.Member;
 import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.domain.EMUser;
@@ -21,6 +22,10 @@ import cn.ucai.superwechat.domain.EMUser;
 import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.util.HanziToPinyin;
 import com.squareup.picasso.Picasso;
+
+import org.apache.http.protocol.RequestUserAgent;
+
+import java.util.ArrayList;
 
 public class UserUtils {
     /**
@@ -41,6 +46,27 @@ public class UserUtils {
         }
         return user;
     }
+
+	private static Member getGroupMember(String hxid, String username) {
+		ArrayList<Member> members = SuperWeChatApplication.getInstance().getGroupMembers().get(hxid);
+		if (members != null) {
+			for (Member member : members) {
+				if (member.getMMemberUserName().equals(username)) {
+					return member;
+				}
+			}
+		} else {
+
+		}
+		return null;
+	}
+
+	public static void setGroupMemberNick(String hxid, String username, TextView textView) {
+		Member groupMember = getGroupMember(hxid, username);
+		if (groupMember != null) {
+			setUserBeanNick(groupMember,textView);
+		}
+	}
 
 	public static Contact getUserBeanInfo(String username) {
 		Contact contact=SuperWeChatApplication.getInstance().getUserList().get(username);
