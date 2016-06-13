@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Created by Administrator on 2016/6/13 0013.
  */
-public class PropertyBean implements Serializable {
+public class PropertyBean implements Serializable  {
 
     /**
      * id : 9529
