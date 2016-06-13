@@ -47,6 +47,7 @@ import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -74,6 +75,7 @@ import cn.ucai.superwechat.SuperWeChatApplication;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.adapter.ExpressionAdapter;
 import cn.ucai.superwechat.adapter.MessageAdapter;
+import cn.ucai.superwechat.bean.Group;
 import cn.ucai.superwechat.bean.Member;
 import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
@@ -216,6 +218,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	public EMGroup group;
 	public EMChatRoom room;
 	public boolean isRobot;
+	Group mGroup;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -385,10 +388,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 		iv_emoticons_normal.setOnClickListener(this);
 		iv_emoticons_checked.setOnClickListener(this);
 		// position = getIntent().getIntExtra("position", -1);
-		clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-		manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+		clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+		manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		wakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(
+		wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
 				PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
 		// 判断单聊还是群聊
 		chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
@@ -524,7 +527,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	
 	protected void onGroupViewCreation(){
 		members = SuperWeChatApplication.getInstance().getGroupMembers().get(toChatUsername);
-		if (members != null) {
+		group = EMGroupManager.getInstance().getGroup(toChatUsername);
+		if (members == null) {
 			members = new ArrayList<Member>();
 			new DownloadGroupMemberTask(ChatActivity.this,toChatUsername).execute();
 //			try {
@@ -536,9 +540,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 //				e.printStackTrace();
 //			}
 		}
+
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				ArrayList<Group> groupList = SuperWeChatApplication.getInstance().getGroupList();
+				for (Group group : groupList) {
+					if (group.getMGroupHxid().equals(toChatUsername)) {
+						mGroup = group;
+						return;
+					}
+				}
+			}
+		});
+		Log.e("error", "chatactivity tochatusername" + toChatUsername);
 		group = EMGroupManager.getInstance().getGroup(toChatUsername);
-        
-        if (group != null){
+
+		if (group != null){
             ((TextView) findViewById(R.id.name)).setText(group.getGroupName());
         }else{
             ((TextView) findViewById(R.id.name)).setText(toChatUsername);
@@ -708,7 +726,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 					sendLocationMsg(latitude, longitude, "", locationAddress);
 				} else {
 					String st = getResources().getString(R.string.unable_to_get_loaction);
-					Toast.makeText(this, st, 0).show();
+					Toast.makeText(this, st, Toast.LENGTH_SHORT).show();
 				}
 				// 重发消息
 			} else if (requestCode == REQUEST_CODE_TEXT || requestCode == REQUEST_CODE_VOICE
@@ -889,7 +907,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	public void selectPicFromCamera() {
 		if (!CommonUtils.isExitsSdcard()) {
 			String st = getResources().getString(R.string.sd_card_does_not_exist);
-			Toast.makeText(getApplicationContext(), st, 0).show();
+			Toast.makeText(getApplicationContext(), st, Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -937,7 +955,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 
 	 * @param content
 	 *            message content
-	 * @param isResend
 	 *            boolean resend
 	 */
 	public void sendText(String content) {
@@ -1278,11 +1295,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 */
 	public void toGroupDetails(View view) {
 		if (room == null && group == null) {
-			Toast.makeText(getApplicationContext(), R.string.gorup_not_found, 0).show();
+			Toast.makeText(getApplicationContext(), R.string.gorup_not_found, Toast.LENGTH_SHORT).show();
 			return;
 		}
 		if(chatType == CHATTYPE_GROUP){
-			startActivityForResult((new Intent(this, GroupDetailsActivity.class).putExtra("groupId", toChatUsername)),
+			startActivityForResult((new Intent(this, GroupDetailsActivity.class).putExtra("groupId", toChatUsername)	.putExtra("mGroup", mGroup)),
 					REQUEST_CODE_GROUP_DETAIL);
 		}else{
 			startActivityForResult((new Intent(this, ChatRoomDetailsActivity.class).putExtra("roomId", toChatUsername)),
@@ -1339,7 +1356,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	 * 按住说话listener
 	 * 
 	 */
-	class PressToSpeakListen implements OnTouchListener {
+	class PressToSpeakListen implements View.OnTouchListener {
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
 			switch (event.getAction()) {
@@ -1452,7 +1469,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 						if (filename != "delete_expression" ) { // 不是删除键，显示表情
 							// 这里用的反射，所以混淆的时候不要混淆SmileUtils这个类
-							Class clz = Class.forName(Utils.getPackageName(getApplication())+".Utils.UtSmileUtils");
+							Class clz = Class.forName(Utils.getPackageName(getApplicationContext())+"SmileUtils");
 							Field field = clz.getField(filename);
 							mEditTextContent.append(SmileUtils.getSmiledText(ChatActivity.this,
 									(String) field.get(null)));
@@ -1593,7 +1610,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 					runOnUiThread(new Runnable() {
 						public void run() {
 							pd.dismiss();
-							Toast.makeText(getApplicationContext(), R.string.Move_into_blacklist_success, 0).show();
+							Toast.makeText(getApplicationContext(), R.string.Move_into_blacklist_success, Toast.LENGTH_SHORT).show();
 						}
 					});
 				} catch (EaseMobException e) {
@@ -1601,7 +1618,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 					runOnUiThread(new Runnable() {
 						public void run() {
 							pd.dismiss();
-							Toast.makeText(getApplicationContext(), R.string.Move_into_blacklist_failure, 0).show();
+							Toast.makeText(getApplicationContext(), R.string.Move_into_blacklist_failure, Toast.LENGTH_SHORT).show();
 						}
 					});
 				}
@@ -1739,7 +1756,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			break;
 		}
 		
-		if(forward_msg.getChatType() == ChatType.ChatRoom){
+		if(forward_msg.getChatType() == EMMessage.ChatType.ChatRoom){
 			EMChatManager.getInstance().leaveChatRoom(forward_msg.getTo());
 		}
 	}
@@ -1757,7 +1774,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 				public void run() {
 					if (toChatUsername.equals(groupId)) {
-						Toast.makeText(ChatActivity.this, st13, 1).show();
+						Toast.makeText(ChatActivity.this, st13, Toast.LENGTH_LONG).show();
 						if (GroupDetailsActivity.instance != null)
 							GroupDetailsActivity.instance.finish();
 						finish();
@@ -1774,7 +1791,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 				public void run() {
 					if (toChatUsername.equals(groupId)) {
-						Toast.makeText(ChatActivity.this, st14, 1).show();
+						Toast.makeText(ChatActivity.this, st14,Toast.LENGTH_LONG).show();
 						if (GroupDetailsActivity.instance != null)
 							GroupDetailsActivity.instance.finish();
 						finish();
