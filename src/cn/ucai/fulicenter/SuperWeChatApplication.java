@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.ucai.fulicenter.bean.Contact;
-import cn.ucai.fulicenter.bean.Group;
-import cn.ucai.fulicenter.bean.Member;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.RequestManager;
 
@@ -93,7 +91,6 @@ public class SuperWeChatApplication extends Application {
 	/**
 	 * 设置用户名
 	 *
-	 * @param user
 	 */
 	public void setUserName(String username) {
 	    hxSDKHelper.setHXId(username);
@@ -119,33 +116,6 @@ public class SuperWeChatApplication extends Application {
 	private User user;
 	private ArrayList<Contact> contactList = new ArrayList<Contact>();
 	private HashMap<String, Contact> userList = new HashMap<String,Contact>();
-	private ArrayList<Group> groupList = new ArrayList<Group>();
-	private ArrayList<Group> publicGroupList = new ArrayList<Group>();
-	private HashMap<String, ArrayList<Member>> groupMembers = new HashMap<String,ArrayList<Member>>();
-
-	public HashMap<String, ArrayList<Member>> getGroupMembers() {
-		return groupMembers;
-	}
-
-	public void setGroupMembers(HashMap<String, ArrayList<Member>> groupMembers) {
-		this.groupMembers = groupMembers;
-	}
-
-	public ArrayList<Group> getPublicGroupList() {
-		return publicGroupList;
-	}
-
-	public void setPublicGroupList(ArrayList<Group> publicGroupList) {
-		this.publicGroupList = publicGroupList;
-	}
-
-	public ArrayList<Group> getGroupList() {
-		return groupList;
-	}
-
-	public void setGroupList(ArrayList<Group> groupList) {
-		this.groupList = groupList;
-	}
 
 	public HashMap<String, Contact> getUserList() {
 		return userList;

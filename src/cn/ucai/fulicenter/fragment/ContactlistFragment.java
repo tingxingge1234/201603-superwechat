@@ -52,7 +52,6 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.SuperWeChatApplication;
 import cn.ucai.fulicenter.activity.AddContactActivity;
 import cn.ucai.fulicenter.activity.ChatActivity;
-import cn.ucai.fulicenter.activity.GroupsActivity;
 import cn.ucai.fulicenter.activity.MainActivity;
 import cn.ucai.fulicenter.activity.NewFriendsMsgActivity;
 import cn.ucai.fulicenter.activity.PublicChatRoomsActivity;
@@ -289,13 +288,7 @@ public class ContactlistFragment extends Fragment {
 					EMUser user = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList().get(Constant.NEW_FRIENDS_USERNAME);
 					user.setUnreadMsgCount(0);
 					startActivity(new Intent(getActivity(), NewFriendsMsgActivity.class));
-				} else if (Constant.GROUP_USERNAME.equals(username)) {
-					// 进入群聊列表页面
-					startActivity(new Intent(getActivity(), GroupsActivity.class));
-				} else if(Constant.CHAT_ROOM.equals(username)){
-					//进入聊天室列表页面
-					startActivity(new Intent(getActivity(), PublicChatRoomsActivity.class));
-				}else if(Constant.CHAT_ROBOT.equals(username)){
+				} else if(Constant.CHAT_ROBOT.equals(username)){
 					//进入Robot列表页面
 					startActivity(new Intent(getActivity(), RobotsActivity.class));
 				}else {
@@ -507,16 +500,6 @@ public class ContactlistFragment extends Fragment {
 		mContactList.clear();
 		ArrayList<Contact> contactList = SuperWeChatApplication.getInstance().getContactList();
 		mContactList.addAll(contactList);
-		// 添加"群聊"
-		Contact groupUser = new Contact();
-		String strGroup = getActivity().getString(cn.ucai.fulicenter.R.string.group_chat);
-		groupUser.setMContactId(-2);
-		groupUser.setMContactCname(Constant.GROUP_USERNAME);
-		groupUser.setMUserName(Constant.GROUP_USERNAME);
-		groupUser.setMUserNick(strGroup);
-		if(mContactList.indexOf(groupUser)==-1){
-			contactList.add(0, groupUser);
-		}
 
 		// 添加user"申请与通知"
 		Contact newFriends = new Contact();

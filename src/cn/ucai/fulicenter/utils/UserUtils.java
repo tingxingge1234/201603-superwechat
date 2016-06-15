@@ -13,7 +13,6 @@ import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.Contact;
-import cn.ucai.fulicenter.bean.Member;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.RequestManager;
 import cn.ucai.fulicenter.domain.EMUser;
@@ -44,26 +43,7 @@ public class UserUtils {
         return user;
     }
 
-	private static Member getGroupMember(String hxid, String username) {
-		ArrayList<Member> members = SuperWeChatApplication.getInstance().getGroupMembers().get(hxid);
-		if (members != null) {
-			for (Member member : members) {
-				if (member.getMMemberUserName().equals(username)) {
-					return member;
-				}
-			}
-		} else {
 
-		}
-		return null;
-	}
-
-	public static void setGroupMemberNick(String hxid, String username, TextView textView) {
-		Member groupMember = getGroupMember(hxid, username);
-		if (groupMember != null) {
-			setUserBeanNick(groupMember,textView);
-		}
-	}
 
 	public static Contact getUserBeanInfo(String username) {
 		Contact contact=SuperWeChatApplication.getInstance().getUserList().get(username);
@@ -94,24 +74,7 @@ public class UserUtils {
 			setUserAvatar(getAvatarPath(username),imageView);
 		}
 	}
-	//获取群头像
-	public static void setGroupBeanAvatar(String mGroupHxid, NetworkImageView imageView) {
-		if (mGroupHxid != null && !mGroupHxid.isEmpty()) {
-			setGroupAvatar(getGroupPath(mGroupHxid), imageView);
-		}
-	}
 
-	private static String getGroupPath(String hxid) {
-		if (hxid == null || hxid.isEmpty()) return null;
-		return I.REQUEST_DOWNLOAD_AVATAR_GROUP + hxid;
-	}
-
-	private static void setGroupAvatar(String url, NetworkImageView imageView) {
-		if (url == null || url.isEmpty()) return;
-		imageView.setDefaultImageResId(R.drawable.group_icon);
-		imageView.setImageUrl(url, RequestManager.getImageLoader());
-		imageView.setErrorImageResId(R.drawable.group_icon);
-	}
 
 
 

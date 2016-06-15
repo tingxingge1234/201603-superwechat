@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.activity.NewFriendsMsgActivity;
-import cn.ucai.fulicenter.bean.Group;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
@@ -45,7 +44,6 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.task.DownloadGroupMemberTask;
 import cn.ucai.fulicenter.utils.UserUtils;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
@@ -87,13 +85,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		String str6 = context.getResources().getString(R.string.Has_refused_to);
 		final InviteMessage msg = getItem(position);
 		if (msg != null) {
-			if(msg.getGroupId() != null){ // 显示群聊提示
-				holder.groupContainer.setVisibility(View.VISIBLE);
-				holder.groupname.setText(msg.getGroupName());
-			} else{
-				holder.groupContainer.setVisibility(View.GONE);
-			}
-			
+
 			holder.reason.setText(msg.getReason());
 //			holder.name.setText(msg.getFrom());
 			// holder.time.setText(DateUtils.getTimestampString(new
@@ -163,7 +155,6 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 	 * 同意好友请求或者群申请
 	 * 
 	 * @param button
-	 * @param username
 	 */
 	private void acceptInvitation(final Button button, final InviteMessage msg) {
 		pd = new ProgressDialog(context);
@@ -181,32 +172,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 				try {
 					if (msg.getGroupId() == null) { //同意好友请求
 						EMChatManager.getInstance().acceptInvitation(msg.getFrom());
-					} else {
-						String path = new ApiParams()
-								.with(I.Member.USER_NAME, msg.getFrom())
-								.with(I.Member.GROUP_HX_ID, msg.getGroupId())
-								.getRequestUrl(I.REQUEST_ADD_GROUP_MEMBER_BY_USERNAME);
-						((NewFriendsMsgActivity) context).executeRequest(new GsonRequest<Group>(path, Group.class,
-								responseAddGroupMemberByUserNameListener(button,msg), ((NewFriendsMsgActivity) context).errorListener()));
 					}
-					//同意加群申请
-					EMGroupManager.getInstance().acceptApplication(msg.getFrom(), msg.getGroupId());
-					((Activity) context).runOnUiThread(new Runnable() {
-
-						@Override
-						public void run() {
-							pd.dismiss();
-							button.setText(str2);
-							msg.setStatus(InviteMessage.InviteMesageStatus.AGREED);
-							// 更新db
-							ContentValues values = new ContentValues();
-							values.put(InviteMessgeDao.COLUMN_NAME_STATUS, msg.getStatus().ordinal());
-							messgeDao.updateMessage(msg.getId(), values);
-							button.setBackgroundDrawable(null);
-							button.setEnabled(false);
-
-						}
-					});
 				} catch (final Exception e) {
 					((Activity) context).runOnUiThread(new Runnable() {
 
@@ -222,36 +188,6 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		}).start();
 	}
 
-	private Response.Listener<Group> responseAddGroupMemberByUserNameListener(final Button button, final InviteMessage msg) {
-		return new Response.Listener<Group>() {
-			@Override
-			public void onResponse(Group group) {
-				final String str2 = context.getResources().getString(R.string.Has_agreed_to);
-				new DownloadGroupMemberTask(context,group.getMGroupHxid()).execute();
-				try {
-					EMGroupManager.getInstance().acceptApplication(msg.getFrom(), msg.getGroupId());
-				} catch (EaseMobException e) {
-					e.printStackTrace();
-				}
-				((Activity) context).runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						pd.dismiss();
-						button.setText(str2);
-						msg.setStatus(InviteMessage.InviteMesageStatus.AGREED);
-						// 更新db
-						ContentValues values = new ContentValues();
-						values.put(InviteMessgeDao.COLUMN_NAME_STATUS, msg.getStatus().ordinal());
-						messgeDao.updateMessage(msg.getId(), values);
-						button.setBackgroundDrawable(null);
-						button.setEnabled(false);
-
-					}
-				});
-			}
-		};
-	}
 
 	private static class ViewHolder {
 		NetworkImageView avator;

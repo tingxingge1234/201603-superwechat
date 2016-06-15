@@ -99,11 +99,6 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		// 获取用户username或者群组groupid
 		String username = conversation.getUserName();
 		if (conversation.getType() == EMConversationType.GroupChat) {
-			// 群聊消息，显示群聊头像
-//			holder.avatar.setImageResource(R.drawable.group_icon);
-			EMGroup group = EMGroupManager.getInstance().getGroup(username);
-			UserUtils.setGroupBeanAvatar(group.getGroupId(),holder.avatar);
-			holder.name.setText(group != null ? group.getGroupName() : username);
 		} else if(conversation.getType() == EMConversationType.ChatRoom){
 		    holder.avatar.setImageResource(R.drawable.group_icon);
             EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);
@@ -111,10 +106,7 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		}else {
 //		    UserUtils.setUserAvatar(getContext(), username, holder.avatar);
 			UserUtils.setUserBeanAvatar(username,holder.avatar);
-			if (username.equals(Constant.GROUP_USERNAME)) {
-				holder.name.setText("群聊");
-
-			} else if (username.equals(Constant.NEW_FRIENDS_USERNAME)) {
+			if(username.equals(Constant.NEW_FRIENDS_USERNAME)) {
 				holder.name.setText("申请与通知");
 			}
 			Map<String,RobotUser> robotMap=((DemoHXSDKHelper) HXSDKHelper.getInstance()).getRobotList();

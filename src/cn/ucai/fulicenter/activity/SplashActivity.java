@@ -20,9 +20,7 @@ import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.SuperWeChatApplication;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.db.UserDao;
-import cn.ucai.fulicenter.task.DownloadAllGroupTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
-import cn.ucai.fulicenter.task.DownloadPublicGroupTask;
 
 /**
  * 开屏页
@@ -64,8 +62,6 @@ public class SplashActivity extends BaseActivity {
 			instance.setUser(user);
 			Log.e("error", "username=" + username);
 			new DownloadContactListTask(context, username).execute();
-			new DownloadAllGroupTask(context,username).execute();
-			new DownloadPublicGroupTask(context,username, I.PAGE_ID_DEFAULT,I.PAGE_SIZE_DEFAULT).execute();
 		}
 		new Thread(new Runnable() {
 			public void run() {
