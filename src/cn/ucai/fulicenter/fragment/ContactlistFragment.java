@@ -54,7 +54,6 @@ import cn.ucai.fulicenter.activity.AddContactActivity;
 import cn.ucai.fulicenter.activity.ChatActivity;
 import cn.ucai.fulicenter.activity.MainActivity;
 import cn.ucai.fulicenter.activity.NewFriendsMsgActivity;
-import cn.ucai.fulicenter.activity.PublicChatRoomsActivity;
 import cn.ucai.fulicenter.activity.RobotsActivity;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
 

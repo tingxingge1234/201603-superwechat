@@ -101,8 +101,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			UserUtils.setCurrentUserBeanAvatar(headAvatar);
 		} else {
 			if (groupId != null) {
-				UserUtils.setGroupBeanAvatar(UserUtils.getAvatarPath(username),headAvatar);
-				UserUtils.setGroupMemberNick(groupId,username,tvNickName);
 			} else {
 				UserUtils.setUserBeanNick(username, tvNickName);
 				UserUtils.setUserBeanAvatar(username, headAvatar);
