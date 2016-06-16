@@ -161,13 +161,20 @@ public class NewGoodFragment extends Fragment {
 
     private void initView(View layout ) {
         msrl = (SwipeRefreshLayout) layout.findViewById(R.id.srl_newgood);
+        msrl.setColorSchemeColors(
+                R.color.google_blue,
+                R.color.google_green,
+                R.color.google_red,
+                R.color.google_yellow
+        );
         mtvHint = (TextView) layout.findViewById(R.id.tvRefreshHint);
         mGridLayoutManager = new GridLayoutManager(mContext, I.COLUM_NUM);
         mGridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.rv_newgood);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mAdapter = new GoodAdapter(mContext, mGoodList);
+
+        mAdapter = new GoodAdapter(mContext, mGoodList,I.SORT_BY_ADDTIME_DESC);
         mRecyclerView.setAdapter(mAdapter);
     }
 

@@ -13,8 +13,12 @@ import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.Text;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
+import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.BaseActivity;
 import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
 
@@ -32,6 +36,60 @@ public class GoodAdapter extends RecyclerView.Adapter{
     static final int TYPE_ITEM = 0;
     static final int TYPE_FOOTER=1;
     boolean isMore;
+    int sortBy;
+
+    public GoodAdapter(Context mContext,ArrayList<NewGoodBean> mNewGoodList,int sortBy) {
+        this.mContext = mContext;
+        this.sortBy = sortBy;
+        this.mNewGoodList = mNewGoodList;
+    }
+
+    public int getSortBy() {
+        return sortBy;
+    }
+
+    public void setSortBy(int sortBy) {
+        this.sortBy = sortBy;
+        sort(sortBy);
+        notifyDataSetChanged();
+    }
+
+    private void sort(final int sortBy) {
+        Collections.sort(mNewGoodList, new Comparator<NewGoodBean>() {
+            @Override
+            public int compare(NewGoodBean g1, NewGoodBean g2) {
+                int result = 0;
+                switch (sortBy) {
+                    case I.SORT_BY_ADDTIME_ASC:
+                        result = (int) (g1.getAddTime()-g2.getAddTime());
+                        break;
+                    case I.SORT_BY_ADDTIME_DESC:
+                        result = (int) (g2.getAddTime()-g1.getAddTime());
+                        break;
+                    case I.SORT_BY_PRICE_ASC:
+                    {
+                        int p1 = convertPrice(g1.getCurrencyPrice());
+                        int p2 = convertPrice(g2.getCurrencyPrice());
+                        result = p1-p2;
+                        break;
+                    }
+                    case  I.SORT_BY_PRICE_DESC:
+                    {
+                        int p1 = convertPrice(g1.getCurrencyPrice());
+                        int p2 = convertPrice(g2.getCurrencyPrice());
+                        result = p2-p1;
+                    }
+                        break;
+                }
+                return result;
+            }
+            private  int convertPrice(String price) {
+                price = price.substring(price.indexOf("¥") + 1);
+                int p1 = Integer.parseInt(price);
+                return p1;
+            }
+        });
+    }
 
     public GoodAdapter(Context context, ArrayList<NewGoodBean> mNewGoodList) {
         this.mContext = context;
@@ -60,11 +118,13 @@ public class GoodAdapter extends RecyclerView.Adapter{
     public void initContact(ArrayList<NewGoodBean> list) {
         this.mNewGoodList.clear();
         this.mNewGoodList.addAll(list);
+        sort(sortBy);
         notifyDataSetChanged();
     }
 
     public void addContact(ArrayList<NewGoodBean> contactList) {
         this.mNewGoodList.addAll(contactList);
+        sort(sortBy);
         notifyDataSetChanged();
     }
     @Override
