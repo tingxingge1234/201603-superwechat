@@ -15,9 +15,8 @@ import cn.ucai.fulicenter.DemoHXSDKHelper;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 
-import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.SuperWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.db.UserDao;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
@@ -54,11 +53,11 @@ public class SplashActivity extends BaseActivity {
 		super.onStart();
 		if (DemoHXSDKHelper.getInstance().isLogined()) {
 			Log.e("error", "start download contact,group,public group");
-			String username = SuperWeChatApplication.getInstance().getUserName();
+			String username = FuliCenterApplication.getInstance().getUserName();
 			UserDao dao = new UserDao(context);
 			User user = dao.findUserByUserName(username);
 			Log.e("error", "splash user" + user);
-			SuperWeChatApplication instance = SuperWeChatApplication.getInstance();
+			FuliCenterApplication instance = FuliCenterApplication.getInstance();
 			instance.setUser(user);
 			Log.e("error", "username=" + username);
 			new DownloadContactListTask(context, username).execute();

@@ -29,7 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import cn.ucai.fulicenter.SuperWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.activity.BlacklistActivity;
 import cn.ucai.fulicenter.activity.DiagnoseActivity;
 import cn.ucai.fulicenter.activity.LoginActivity;
@@ -364,7 +364,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 				getActivity().runOnUiThread(new Runnable() {
 					public void run() {
 						pd.dismiss();
-						SuperWeChatApplication instance = SuperWeChatApplication.getInstance();
+						FuliCenterApplication instance = FuliCenterApplication.getInstance();
 						instance.getContactList().clear();
 						instance.getUserList().clear();
 //						User user = new User();

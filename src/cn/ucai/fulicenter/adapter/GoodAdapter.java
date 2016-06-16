@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.NewGoodBean;
+import cn.ucai.fulicenter.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2016/6/15 0015.
@@ -95,11 +96,12 @@ public class GoodAdapter extends RecyclerView.Adapter{
         NewGoodBean good = mNewGoodList.get(position);
         holder1.mtvGoodName.setText(good.getGoodsName());
         holder1.mtvPrice.setText(good.getShopPrice());
+        ImageUtils.setNewGoodThumb(good.getGoodsThumb(),holder1.mAvatar);
     }
 
     @Override
     public int getItemCount() {
-        return mNewGoodList==null?0:mNewGoodList.size()+1;
+        return mNewGoodList==null?1:mNewGoodList.size()+1;
     }
 
     @Override
@@ -119,6 +121,7 @@ public class GoodAdapter extends RecyclerView.Adapter{
             mAvatar = (NetworkImageView) itemView.findViewById(R.id.nivAvatar);
             mtvGoodName = (TextView) itemView.findViewById(R.id.tv_good_name);
             mtvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+
         }
     }
 

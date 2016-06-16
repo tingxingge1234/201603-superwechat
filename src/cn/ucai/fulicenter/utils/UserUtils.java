@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import cn.ucai.fulicenter.Constant;
 import cn.ucai.fulicenter.I;
-import cn.ucai.fulicenter.SuperWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.R;
@@ -20,8 +20,6 @@ import cn.ucai.fulicenter.domain.EMUser;
 import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.util.HanziToPinyin;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 public class UserUtils {
     /**
@@ -46,7 +44,7 @@ public class UserUtils {
 
 
 	public static Contact getUserBeanInfo(String username) {
-		Contact contact=SuperWeChatApplication.getInstance().getUserList().get(username);
+		Contact contact= FuliCenterApplication.getInstance().getUserList().get(username);
 		return  contact;
 	}
 
@@ -105,7 +103,7 @@ public class UserUtils {
 		}
 	}
 	public static void setCurrentUserBeanAvatar( NetworkImageView imageView) {
-		User user = SuperWeChatApplication.getInstance().getUser();
+		User user = FuliCenterApplication.getInstance().getUser();
 		if (user != null) {
 			setUserAvatar(getAvatarPath(user.getMUserName()),imageView);
 		}
@@ -158,7 +156,7 @@ public class UserUtils {
 	 * 设置当前用户昵称
 	 */
 	public static void setCurrentUserBeanNick(TextView textView){
-		User user = SuperWeChatApplication.getInstance().getUser();
+		User user = FuliCenterApplication.getInstance().getUser();
 		Log.e("error", "user" + user);
 		if(textView != null&&user!=null&&user.getMUserNick()!=null){
 			textView.setText(user.getMUserNick());
