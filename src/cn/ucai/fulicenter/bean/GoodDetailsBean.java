@@ -44,11 +44,11 @@ public class GoodDetailsBean implements Serializable {
     private String shareUrl;
     @JsonProperty("isPromote")
     private boolean isPromote;
-    private PropertyBean[] PropertyBean;
+    private cn.ucai.fulicenter.bean.properties[] properties;
 
-    public GoodDetailsBean(boolean isPromote, PropertyBean[] propertyBean) {
+    public GoodDetailsBean(boolean isPromote, cn.ucai.fulicenter.bean.properties[] properties) {
         this.isPromote = isPromote;
-        PropertyBean = propertyBean;
+        properties = properties;
     }
 
     @Override
@@ -85,16 +85,16 @@ public class GoodDetailsBean implements Serializable {
                 ", addTime=" + addTime +
                 ", shareUrl='" + shareUrl + '\'' +
                 ", promote=" + isPromote +
-                ", PropertyBean=" + Arrays.toString(PropertyBean) +
+                ", PropertyBean=" + Arrays.toString(properties) +
                 '}';
     }
 
-    public cn.ucai.fulicenter.bean.PropertyBean[] getPropertyBean() {
-        return PropertyBean;
+    public cn.ucai.fulicenter.bean.properties[] getPropertyBean() {
+        return properties;
     }
 
-    public void setPropertyBean(cn.ucai.fulicenter.bean.PropertyBean[] propertyBean) {
-        PropertyBean = propertyBean;
+    public void setPropertyBean(cn.ucai.fulicenter.bean.properties[] properties) {
+        properties = properties;
     }
 
     public int getId() {

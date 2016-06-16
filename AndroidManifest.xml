@@ -68,7 +68,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- 商品详情 -->
+        <activity android:name=".activity.GoodDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide">
 
+        </activity>
         <!-- 登陆 -->
         <activity
             android:name=".activity.LoginActivity"

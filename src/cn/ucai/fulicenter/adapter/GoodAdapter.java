@@ -1,43 +1,41 @@
 package cn.ucai.fulicenter.adapter;
 
 import android.content.Context;
-import android.content.IntentFilter;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.baidu.mapapi.map.MapStatusUpdate;
-import com.baidu.mapapi.map.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import cn.ucai.fulicenter.D;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.activity.BaseActivity;
+import cn.ucai.fulicenter.activity.GoodDetailActivity;
 import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
+import cn.ucai.fulicenter.view.FooterViewHolder;
 
 /**
  * Created by Administrator on 2016/6/15 0015.
  */
-public class GoodAdapter extends RecyclerView.Adapter{
+public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     Context mContext;
     ArrayList<NewGoodBean> mNewGoodList;
-
-
-
     ViewGroup parent;
     String footerText;
     static final int TYPE_ITEM = 0;
     static final int TYPE_FOOTER=1;
     boolean isMore;
     int sortBy;
-
+    FooterViewHolder mFooterViewHolder;
     public GoodAdapter(Context mContext,ArrayList<NewGoodBean> mNewGoodList,int sortBy) {
         this.mContext = mContext;
         this.sortBy = sortBy;
@@ -149,14 +147,20 @@ public class GoodAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position == getItemCount() - 1) {
-            ((FooterViewHolder)holder).mtvFootertext.setText(footerText);
+            mFooterViewHolder = (FooterViewHolder) holder;
             return;
         }
         GoodItemViewHolder holder1 = (GoodItemViewHolder)holder;
-        NewGoodBean good = mNewGoodList.get(position);
+        final NewGoodBean good = mNewGoodList.get(position);
         holder1.mtvGoodName.setText(good.getGoodsName());
         holder1.mtvPrice.setText(good.getShopPrice());
         ImageUtils.setNewGoodThumb(good.getGoodsThumb(),holder1.mAvatar);
+        holder1.ll_good.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mContext.startActivity(new Intent(mContext, GoodDetailActivity.class).putExtra(D.NewGood.KEY_GOODS_ID,good.getGoodsId()));
+            }
+        });
     }
 
     @Override
@@ -176,20 +180,16 @@ public class GoodAdapter extends RecyclerView.Adapter{
     class GoodItemViewHolder extends RecyclerView.ViewHolder {
         NetworkImageView mAvatar;
         TextView mtvGoodName,mtvPrice;
+        LinearLayout ll_good;
         public GoodItemViewHolder(View itemView) {
             super(itemView);
             mAvatar = (NetworkImageView) itemView.findViewById(R.id.nivAvatar);
             mtvGoodName = (TextView) itemView.findViewById(R.id.tv_good_name);
             mtvPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            ll_good = (LinearLayout) itemView.findViewById(R.id.layout_good);
 
         }
     }
 
-    class FooterViewHolder extends RecyclerView.ViewHolder {
-        TextView mtvFootertext;
-        public FooterViewHolder(View itemView) {
-            super(itemView);
-            mtvFootertext = (TextView) itemView.findViewById(R.id.tv_footer);
-        }
-    }
+
 }

@@ -40,13 +40,20 @@
             android:layout_centerVertical="true"
             android:paddingRight="20dp"
             />
+        <TextView
+            android:id="@+id/tv_cart_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/iv_collect"
+            android:text="12"/>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/rl_good_details"
         android:layout_below="@id/rl_top"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:padding="50dp">
         <TextView
             android:id="@+id/tv_english_name"
             android:layout_width="wrap_content"

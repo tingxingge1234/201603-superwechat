@@ -3,7 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="#fff"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/layout_good">
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/nivAvatar"
         android:layout_width="match_parent"
