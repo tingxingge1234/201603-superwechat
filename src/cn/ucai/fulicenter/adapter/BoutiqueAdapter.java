@@ -3,25 +3,21 @@ package cn.ucai.fulicenter.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import cn.ucai.fulicenter.D;
-import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.activity.GoodDetailActivity;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
-import cn.ucai.fulicenter.bean.NewGoodBean;
+import cn.ucai.fulicenter.activity.BoutiqueDetailsActivity;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.view.FooterViewHolder;
 
@@ -50,11 +46,6 @@ public class BoutiqueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setMore(boolean more) {
         isMore = more;
-        if (isMore) {
-            setFooterText("加载更多数据");
-        } else {
-            setFooterText("没有更多数据");
-        }
         notifyDataSetChanged();
     }
 
@@ -74,13 +65,12 @@ public class BoutiqueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        this.parent = parent;
         RecyclerView.ViewHolder holder = null;
         View layout = null;
         final LayoutInflater filter = LayoutInflater.from(mContext);
         switch (viewType) {
             case TYPE_ITEM:
-                layout = filter.inflate(R.layout.item_newgood, parent, false);
+                layout = filter.inflate(R.layout.item_boutique, parent, false);
                 holder = new BoutiqueItemViewHolder(layout);
                 break;
             case TYPE_FOOTER :
@@ -99,6 +89,7 @@ public class BoutiqueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         BoutiqueItemViewHolder holder1 = (BoutiqueItemViewHolder)holder;
         final BoutiqueBean boutique = mBoutiqueList.get(position);
+        Log.e("error", "boutique" + boutique);
         holder1.mtvBoutiqueName.setText(boutique.getName());
         holder1.mtvBoutiqueTitle.setText(boutique.getTitle());
         holder1.mtvBoutiqueDesc.setText(boutique.getDescription());
@@ -106,7 +97,9 @@ public class BoutiqueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder1.ll_boutique.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, GoodDetailActivity.class));
+                mContext.startActivity(new Intent(mContext, BoutiqueDetailsActivity.class)
+                        .putExtra(D.Boutique.KEY_NAME, boutique.getName())
+                        .putExtra(D.Boutique.KEY_ID, boutique.getId()));
             }
         });
     }

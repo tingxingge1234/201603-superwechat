@@ -74,6 +74,12 @@
             android:theme="@style/horizontal_slide">
 
         </activity>
+        <!-- 精品二级页面 -->
+        <activity android:name=".activity.BoutiqueDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide">
+
+        </activity>
         <!-- 登陆 -->
         <activity
             android:name=".activity.LoginActivity"
