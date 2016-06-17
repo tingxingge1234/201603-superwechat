@@ -15,7 +15,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import cn.ucai.fulicenter.D;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.bean.albums;
+import cn.ucai.fulicenter.bean.Albums;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
@@ -124,7 +124,7 @@ public class GoodDetailActivity extends BaseActivity{
     }
 
     private void updateColor(int i) {
-        albums[] albums = mGoodDetails.getPropertyBean()[i].getAlbumBean();
+        Albums[] albums = mGoodDetails.getPropertyBean()[i].getAlbumBean();
         String[] albumImgUrl = new String[albums.length];
         for (int j= 0 ;j<albumImgUrl.length;j++) {
             albumImgUrl[j]=albums[j].getImgUrl();

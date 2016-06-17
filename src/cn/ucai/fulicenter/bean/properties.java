@@ -6,7 +6,7 @@ import java.util.Arrays;
 /**
  * Created by Administrator on 2016/6/13 0013.
  */
-public class properties implements Serializable  {
+public class Properties implements Serializable  {
 
     /**
      * id : 9529
@@ -25,7 +25,7 @@ public class properties implements Serializable  {
     private String colorCode;
     private String colorImg;
     private String colorUrl;
-    private cn.ucai.fulicenter.bean.albums[] albums;
+    private Albums[] albums;
 
     @Override
     public String toString() {
@@ -41,11 +41,11 @@ public class properties implements Serializable  {
                 '}';
     }
 
-    public cn.ucai.fulicenter.bean.albums[] getAlbumBean() {
+    public Albums[] getAlbumBean() {
         return albums;
     }
 
-    public void setAlbumBean(cn.ucai.fulicenter.bean.albums[] albums) {
+    public void setAlbumBean(Albums[] albums) {
         albums = albums;
     }
 

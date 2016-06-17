@@ -44,9 +44,9 @@ public class GoodDetailsBean implements Serializable {
     private String shareUrl;
     @JsonProperty("isPromote")
     private boolean isPromote;
-    private cn.ucai.fulicenter.bean.properties[] properties;
+    private Properties[] properties;
 
-    public GoodDetailsBean(boolean isPromote, cn.ucai.fulicenter.bean.properties[] properties) {
+    public GoodDetailsBean(boolean isPromote, Properties[] properties) {
         this.isPromote = isPromote;
         properties = properties;
     }
@@ -89,11 +89,11 @@ public class GoodDetailsBean implements Serializable {
                 '}';
     }
 
-    public cn.ucai.fulicenter.bean.properties[] getPropertyBean() {
+    public Properties[] getPropertyBean() {
         return properties;
     }
 
-    public void setPropertyBean(cn.ucai.fulicenter.bean.properties[] properties) {
+    public void setPropertyBean(Properties[] properties) {
         properties = properties;
     }
 
