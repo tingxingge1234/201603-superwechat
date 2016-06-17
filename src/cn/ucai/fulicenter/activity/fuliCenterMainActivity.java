@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.fragment.BoutiqueFragment;
 import cn.ucai.fulicenter.fragment.NewGoodFragment;
 
 public class fuliCenterMainActivity extends BaseActivity {
@@ -19,28 +20,29 @@ public class fuliCenterMainActivity extends BaseActivity {
     int currentTabIndex;
     RadioButton[] mRadios = new RadioButton[5];
     NewGoodFragment mNewGoodFragment;
-    Fragment[] mFragments = new Fragment[1];
+    BoutiqueFragment mBoutiqueFragment;
+    Fragment[] mFragments = new Fragment[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fuli_center_main);
-        mFragments = new Fragment[] { mNewGoodFragment };
-        mNewGoodFragment = new NewGoodFragment();
+        initFragment();
+        mFragments = new Fragment[] { mNewGoodFragment ,mBoutiqueFragment};
         // 添加显示第一个fragment
         getSupportFragmentManager().beginTransaction().add(R.id.fl_contains, mNewGoodFragment)
+                .add(R.id.fl_contains,mBoutiqueFragment)
 //                .add(R.id.fragment_container, contactListFragment)
-//                .hide(contactListFragment)
+                .hide(mBoutiqueFragment)
                 .show(mNewGoodFragment)
                 .commit();
         initView();
-//        initFragment();
     }
 
-//    private void initFragment() {
-//        mNewGoodFragment = new NewGoodFragment();
-//
-//    }
+    private void initFragment() {
+        mNewGoodFragment = new NewGoodFragment();
+        mBoutiqueFragment = new BoutiqueFragment();
+    }
 
     private void initView() {
         mRadioNewGood = (RadioButton) findViewById(R.id.new_good);

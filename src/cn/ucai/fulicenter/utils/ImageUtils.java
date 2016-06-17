@@ -69,6 +69,7 @@ public class ImageUtils {
 		nivThumb.setDefaultImageResId(R.drawable.nopic);
 	}
 
+
 	public static void setGoodDetailThumb(String colorImg, NetworkImageView imageView) {
 		String url = FuliCenterApplication.SERVER_ROOT
 				+"?"+I.KEY_REQUEST+"="+I.REQUEST_DOWNLOAD_COLOR_IMG
