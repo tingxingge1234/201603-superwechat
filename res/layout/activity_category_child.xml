@@ -3,15 +3,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-
-
-
     <RelativeLayout
         android:id="@+id/layout_title"
         android:layout_width="match_parent"
         android:layout_height="25dp">
-
         <include layout="@layout/item_back" />
 
         <cn.ucai.fulicenter.view.CatChildFilterButton
@@ -87,7 +82,4 @@
             android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-
-
 </LinearLayout>
