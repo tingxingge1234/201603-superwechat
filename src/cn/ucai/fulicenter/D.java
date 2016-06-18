@@ -74,7 +74,7 @@ public final class D {
 	}
 	
 	public static class CategoryChild extends CategoryGroup{
-	    public static final String PARENT_ID="parentId";
+	    public static final String PARENT_ID="parent_id";
 	}
 	
 	public static class Category extends Good{
