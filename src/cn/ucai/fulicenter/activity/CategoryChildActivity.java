@@ -8,23 +8,29 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import cn.ucai.fulicenter.D;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.GoodAdapter;
+import cn.ucai.fulicenter.bean.CategoryChildBean;
+import cn.ucai.fulicenter.bean.ColorBean;
 import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.Utils;
+import cn.ucai.fulicenter.view.CatChildFilterButton;
+import cn.ucai.fulicenter.view.ColorFilterButton;
 import cn.ucai.fulicenter.view.DisPlayUtils;
 
 /**
@@ -37,7 +43,10 @@ public class CategoryChildActivity extends BaseActivity {
     private int pageId = 0;
     private int action = I.ACTION_DOWNLOAD;
     String path;
-
+    //分类Button
+    CatChildFilterButton mCatChildFilterButton;
+    //颜色筛选Button
+    ColorFilterButton mColorFilterButton;
     /**
      * 下拉刷新空间
      */
@@ -46,7 +55,8 @@ public class CategoryChildActivity extends BaseActivity {
     TextView mtvHint;
     GridLayoutManager mGridLayoutManager;
     int catId;
-    String name;
+    String groupName;
+    ArrayList<CategoryChildBean> mChildList;
 
     /**
      * 按价格排序
@@ -83,15 +93,39 @@ public class CategoryChildActivity extends BaseActivity {
         mGoodList = new ArrayList<NewGoodBean>();
         initView();
         initData();
+        setListener();
     }
 
 
 
     private void initData() {
+        mChildList = (ArrayList<CategoryChildBean>) getIntent().getSerializableExtra("childList");
         catId = getIntent().getIntExtra(D.CategoryChild.PARENT_ID, 0);
         getPath(pageId,catId);
         mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path, NewGoodBean[].class,
                 responseDownloadNewGoodListener(), mContext.errorListener()));
+        try {
+            String colorPath = new ApiParams()
+                    .with(I.Color.CAT_ID, catId + "")
+                    .getRequestUrl(I.REQUEST_FIND_COLOR_LIST);
+            mContext.executeRequest(new GsonRequest<ColorBean[]>(colorPath, ColorBean[].class,
+                    responseDownloadColorListener(), mContext.errorListener()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Response.Listener<ColorBean[]> responseDownloadColorListener() {
+        return new Response.Listener<ColorBean[]>() {
+            @Override
+            public void onResponse(ColorBean[] colorBeen) {
+                if (colorBeen != null) {
+                    mColorFilterButton.setVisibility(View.VISIBLE);
+                    ArrayList<ColorBean> list = Utils.array2List(colorBeen);
+                    mColorFilterButton.setOnColorFilterClickListener(groupName,mChildList,list);
+                }
+            }
+        };
     }
 
     private Response.Listener<NewGoodBean[]> responseDownloadNewGoodListener() {
@@ -137,6 +171,10 @@ public class CategoryChildActivity extends BaseActivity {
     private void setListener() {
         setPullDownRefreshListener();
         setPullUpRefreshListener();
+        SortStateChangedListener mSortStateChangedListener = new SortStateChangedListener();
+        mbtnPriceSort.setOnClickListener(mSortStateChangedListener);
+        mbtnAddTimeSort.setOnClickListener(mSortStateChangedListener);
+        mCatChildFilterButton.setOnCatFilterClickListener(groupName,mChildList);
     }
 
     /**
@@ -188,6 +226,11 @@ public class CategoryChildActivity extends BaseActivity {
     }
 
     private void initView( ) {
+        groupName = getIntent().getStringExtra(D.CategoryGroup.NAME);
+        mCatChildFilterButton = (CatChildFilterButton) findViewById(R.id.btnCatChildFilter);
+        mColorFilterButton = (ColorFilterButton) findViewById(R.id.btnColorFilter);
+        mColorFilterButton.setVisibility(View.GONE);
+        mCatChildFilterButton.setText(groupName);
         msrl = (SwipeRefreshLayout)findViewById(R.id.srl_category_child);
         msrl.setColorSchemeColors(
                 R.color.google_blue,
@@ -212,10 +255,12 @@ public class CategoryChildActivity extends BaseActivity {
 
         @Override
         public void onClick(View v) {
+            Log.e("error","SortStateChangedListener"+"SortStateChangedListener");
             Drawable right = null;
             int resId;
             switch (v.getId()) {
                 case R.id.btn_price_sort:
+                    Log.e("error","btnprice_sort"+"btnprice_sort");
                     if (mSortByPriceAsc) {
                         sortBy = I.SORT_BY_PRICE_ASC;
                         right = mContext.getResources().getDrawable(R.drawable.arrow_order_up);
@@ -227,6 +272,7 @@ public class CategoryChildActivity extends BaseActivity {
                     }
                     break;
                 case R.id.btn_add_time_sort:
+                    Log.e("error","btn_add_time_sort"+"btn_add_time_sort");
                     if (mSortByAddTimeAsc) {
                         sortBy = I.SORT_BY_ADDTIME_ASC;
                         right = mContext.getResources().getDrawable(R.drawable.arrow_order_up);

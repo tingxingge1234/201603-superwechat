@@ -82,7 +82,7 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 return result;
             }
             private  int convertPrice(String price) {
-                price = price.substring(price.indexOf("¥") + 1);
+                price = price.substring(price.indexOf("￥")+1);
                 int p1 = Integer.parseInt(price);
                 return p1;
             }

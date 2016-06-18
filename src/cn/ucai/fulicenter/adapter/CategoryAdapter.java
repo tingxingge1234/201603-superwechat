@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import cn.ucai.fulicenter.D;
@@ -134,7 +135,11 @@ public class CategoryAdapter extends BaseExpandableListAdapter{
                         .putExtra(D.CategoryChild.PARENT_ID,mChildList
                                 .get(groupPosition)
                                 .get(childPosition)
-                                .getId()));
+                                .getId())
+                        .putExtra(D.CategoryGroup.NAME,mGroupList
+                                .get(groupPosition).getName())
+                        .putExtra("childList",(ArrayList<CategoryChildBean>)mChildList
+                                        .get(groupPosition)));
             }
         });
         return convertView;
