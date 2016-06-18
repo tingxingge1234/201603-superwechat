@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +16,12 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 
+import cn.ucai.fulicenter.D;
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.activity.BaiduMapActivity;
+import cn.ucai.fulicenter.activity.CategoryChildActivity;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
 import cn.ucai.fulicenter.bean.CategoryGroupBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
@@ -106,7 +109,7 @@ public class CategoryAdapter extends BaseExpandableListAdapter{
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ViewChildHolder itemHolder=null;
         if(convertView == null){
             convertView = LayoutInflater.from(mContext).inflate(
@@ -127,7 +130,11 @@ public class CategoryAdapter extends BaseExpandableListAdapter{
         itemHolder.layoutChild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mContext.startActivity(new Intent(mContext, CategoryChildActivity.class)
+                        .putExtra(D.CategoryChild.PARENT_ID,mChildList
+                                .get(groupPosition)
+                                .get(childPosition)
+                                .getId()));
             }
         });
         return convertView;

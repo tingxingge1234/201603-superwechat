@@ -161,6 +161,16 @@ public interface I {
         public static final String COLOR_CODE="colorcode";
         public static final String COLOR_IMG="colorimg";
     }
+    class CategoryGroup{
+        public static final String ID="id";
+        public static final String NAME="name";
+        public static final String IMAGE_URL="imageurl";
+    }
+
+    class CategoryChild extends CategoryGroup{
+        public static final String PARENT_ID="parent_id";
+        public static final String CAT_ID="catId";
+    }
 	interface User {
 		String TABLE_NAME							=		"t_superwechat_user";
 		String USER_ID 								= 		"m_user_id";					//主键
