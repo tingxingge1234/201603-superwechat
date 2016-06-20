@@ -61,6 +61,7 @@ import cn.ucai.fulicenter.task.DownloadContactListTask;
 import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.MD5;
 import cn.ucai.fulicenter.utils.Utils;
+import cn.ucai.fulicenter.view.DisPlayUtils;
 
 /**
  * 登陆页面
@@ -87,7 +88,7 @@ public class LoginActivity extends BaseActivity {
 		// 如果用户名密码都有，直接进入主页面
 		if (DemoHXSDKHelper.getInstance().isLogined()) {
 			autoLogin = true;
-			startActivity(new Intent(LoginActivity.this, MainActivity.class));
+			startActivity(new Intent(LoginActivity.this, fuliCenterMainActivity.class));
 
 			return;
 		}
@@ -96,6 +97,7 @@ public class LoginActivity extends BaseActivity {
 
 		usernameEditText = (EditText) findViewById(R.id.username);
 		passwordEditText = (EditText) findViewById(R.id.password);
+        DisPlayUtils.initBackwithTitle(this,"账户登录");
 
 		setListener();
 
@@ -327,10 +329,14 @@ public class LoginActivity extends BaseActivity {
         if (!LoginActivity.this.isFinishing() && pd.isShowing()) {
             pd.dismiss();
         }
-        // 进入主页面
-        Intent intent = new Intent(LoginActivity.this,
-                MainActivity.class);
-        startActivity(intent);
+        String action = getIntent().getStringExtra("action");
+        if (action != null) {
+            // 进入主页面
+            Intent intent = new Intent(LoginActivity.this,
+                    fuliCenterMainActivity.class)
+                    .putExtra("action",action);
+            startActivity(intent);
+        }
 
         finish();
     }

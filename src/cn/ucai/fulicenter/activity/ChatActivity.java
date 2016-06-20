@@ -734,7 +734,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			if (!EMChatManager.getInstance().isConnected())
 				Toast.makeText(this, st1, Toast.LENGTH_SHORT).show();
 			else{
-				startActivity(new Intent(this, VideoCallActivity.class).putExtra("username", toChatUsername).putExtra(
+				startActivity(new Intent(this, SettingsActivity.class).putExtra("username", toChatUsername).putExtra(
 						"isComingCall", false));
 				videoCallBtn.setEnabled(false);
 				toggleMore(null);

@@ -31,6 +31,16 @@ public class FuliCenterApplication extends Application {
 	private static FuliCenterApplication instance;
 	// login user name
 	public final String PREF_USERNAME = "username";
+	//全局的当前登录用户的收藏商品数量
+	private int collectCount;
+
+	public int getCollectCount() {
+		return collectCount;
+	}
+
+	public void setCollectCount(int collectCount) {
+		this.collectCount = collectCount;
+	}
 
 	/**
 	 * 当前用户nickname,为了苹果推送不是userid而是昵称

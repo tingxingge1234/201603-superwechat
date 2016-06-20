@@ -33,6 +33,7 @@ import cn.ucai.fulicenter.data.OkHttpUtils;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.Utils;
+import cn.ucai.fulicenter.view.DisPlayUtils;
 
 import com.easemob.EMError;
 import com.easemob.chat.EMChatManager;
@@ -70,7 +71,7 @@ public class RegisterActivity extends BaseActivity {
 
 	private void setListener() {
 		setAvatarListener();
-		setOnLoginListener();
+//		setOnLoginListener();
 		setOnRegisterListener();
 	}
 
@@ -102,6 +103,7 @@ public class RegisterActivity extends BaseActivity {
 		btnLogin = (Button) findViewById(R.id.btn_login);
 		btnRegister = (Button) findViewById(R.id.btn_register);
 		mActivity = this;
+		DisPlayUtils.initBackwithTitle(this,"账户注册");
 	}
 
 	/**

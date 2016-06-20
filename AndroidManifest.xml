@@ -167,7 +167,7 @@
             android:theme="@style/nornal_style" />
         <!-- 视频通话 -->
         <activity
-            android:name=".activity.VideoCallActivity"
+            android:name=".activity.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

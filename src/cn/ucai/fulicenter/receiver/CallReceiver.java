@@ -19,7 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import cn.ucai.fulicenter.DemoHXSDKHelper;
-import cn.ucai.fulicenter.activity.VideoCallActivity;
+import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.activity.VoiceCallActivity;
 import com.easemob.util.EMLog;
 
@@ -34,7 +34,7 @@ public class CallReceiver extends BroadcastReceiver{
 		//call type
 		String type = intent.getStringExtra("type");
 		if("video".equals(type)){ //视频通话
-		    context.startActivity(new Intent(context, VideoCallActivity.class).
+		    context.startActivity(new Intent(context, SettingsActivity.class).
                     putExtra("username", from).putExtra("isComingCall", true).
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 		}else{ //音频通话

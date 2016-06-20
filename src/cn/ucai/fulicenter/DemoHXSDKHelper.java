@@ -46,7 +46,7 @@ import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.EMMessage.Type;
 import cn.ucai.fulicenter.activity.ChatActivity;
 import cn.ucai.fulicenter.activity.MainActivity;
-import cn.ucai.fulicenter.activity.VideoCallActivity;
+import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.activity.VoiceCallActivity;
 import cn.ucai.fulicenter.domain.RobotUser;
 import cn.ucai.fulicenter.domain.EMUser;
@@ -327,7 +327,7 @@ public class DemoHXSDKHelper extends HXSDKHelper {
                 Intent intent = new Intent(appContext, ChatActivity.class);
                 //有电话时优先跳转到通话页面
                 if(isVideoCalling){
-                    intent = new Intent(appContext, VideoCallActivity.class);
+                    intent = new Intent(appContext, SettingsActivity.class);
                 }else if(isVoiceCalling){
                     intent = new Intent(appContext, VoiceCallActivity.class);
                 }else{
