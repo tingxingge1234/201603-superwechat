@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,7 @@ import java.util.zip.Inflater;
 
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.CollectActivity;
 import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.activity.fuliCenterMainActivity;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
@@ -36,6 +38,7 @@ import cn.ucai.fulicenter.utils.UserUtils;
  * Created by Administrator on 2016/6/20 0020.
  */
 public class PersonalCenterFragment extends Fragment {
+    public static final String TAG = PersonalCenterFragment.class.getName();
     fuliCenterMainActivity mContext;
     TextView mtvSettings;
     ImageView mivPersonalCenterMsg;
@@ -67,6 +70,7 @@ public class PersonalCenterFragment extends Fragment {
         registerCollectCountChangedListener();
         registerUpdateUserReceiver();
         listener = new MyClickListener();
+        mllCollect.setOnClickListener(listener);
         mtvSettings.setOnClickListener(listener);
         mrlPersonalCenter.setOnClickListener(listener);
     }
@@ -165,7 +169,9 @@ public class PersonalCenterFragment extends Fragment {
                     startActivity(new Intent(mContext, SettingsActivity.class));
                     break;
                 case R.id.ll_collect:
-                    startActivity(new Intent(mContext,SettingsActivity.class));
+                    startActivity(new Intent(mContext,CollectActivity.class));
+                    Log.e(TAG, "llcollect=" + "点击进入收藏的宝贝");
+                    break;
             }
         }
     }

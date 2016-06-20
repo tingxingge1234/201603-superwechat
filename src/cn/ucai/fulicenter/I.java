@@ -64,7 +64,7 @@ public interface I {
         /** 商品id*/
         public static final String ID="id";
         
-        public static final String GOODS_ID="goods_id";
+        public static final String GOODS_ID="goodsId";
         
         public static final String USER_NAME="userName";
         
