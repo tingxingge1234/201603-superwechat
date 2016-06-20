@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.http.LoggingEventHandler;
 import android.util.Log;
 
 import com.android.volley.Response;
@@ -28,6 +29,10 @@ public class DownloadCollectCountTask extends BaseActivity {
     Context mContext;
     String username;
     String path;
+    public DownloadCollectCountTask(Context mContext) {
+        this.mContext = mContext;
+        initPath();
+    }
 
     public DownloadCollectCountTask(Context mContext, String username) {
         this.mContext = mContext;
@@ -36,10 +41,13 @@ public class DownloadCollectCountTask extends BaseActivity {
     }
 
     private void initPath() {
+        username = FuliCenterApplication.getInstance().getUserName();
+        Log.e(TAG, "username=" + username);
         try {
             path = new ApiParams()
-                    .with(I.Contact.USER_NAME, username)
+                    .with(I.User.USER_NAME, username)
                     .getRequestUrl(I.REQUEST_FIND_COLLECT_COUNT);
+            Log.e(TAG, "path=" + path);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -52,11 +60,12 @@ public class DownloadCollectCountTask extends BaseActivity {
         return new Response.Listener<MessageBean>() {
             @Override
             public void onResponse(MessageBean messageBean) {
-                Log.e(TAG,"contact.length="+messageBean);
+                Log.e(TAG,"messageBean="+messageBean);
                 if (messageBean != null) {
-                    int collectCount = FuliCenterApplication.getInstance().getCollectCount();
-                    String msg = Utils.getResourceString(mContext, collectCount);
-                    mContext.sendStickyBroadcast(new Intent("update_collect_count"));
+                    if (messageBean.isSuccess()) {
+                        FuliCenterApplication.getInstance().setCollectCount(Integer.parseInt(messageBean.getMsg()));
+                        mContext.sendStickyBroadcast(new Intent("update_collect_count"));
+                    }
 
                 }
             }

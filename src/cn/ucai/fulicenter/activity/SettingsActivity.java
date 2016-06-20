@@ -47,6 +47,7 @@ import cn.ucai.fulicenter.activity.MainActivity;
 import cn.ucai.fulicenter.activity.OfflinePushNickActivity;
 import cn.ucai.fulicenter.activity.UserProfileActivity;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
+import cn.ucai.fulicenter.view.DisPlayUtils;
 
 /**
  * 设置界面
@@ -240,6 +241,7 @@ public class SettingsActivity extends Activity implements OnClickListener{
 		    iv_switch_room_owner_leave_allow.setVisibility(View.INVISIBLE);
             iv_switch_room_owner_leave_disallow.setVisibility(View.VISIBLE);
 		}
+		DisPlayUtils.initBackwithTitle(mContext,"设置");
 	}
 
 	

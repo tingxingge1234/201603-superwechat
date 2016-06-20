@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class PersonalCenterFragment extends Fragment {
     int mCollectCount;
     MyClickListener listener;
     RelativeLayout mrlPersonalCenter;
+    LinearLayout mllCollect;
     public PersonalCenterFragment() {
     }
     @Override
@@ -79,6 +81,7 @@ public class PersonalCenterFragment extends Fragment {
     }
 
     private void initView(View layout) {
+        mllCollect = (LinearLayout) layout.findViewById(R.id.ll_collect);
         mrlPersonalCenter = (RelativeLayout) layout.findViewById(R.id.rl_personal_center);
         mtvSettings = (TextView) layout.findViewById(R.id.tv_personal_center_settings);
         mivPersonalCenterMsg = (ImageView) layout.findViewById(R.id.iv_personal_center_msg);
@@ -140,7 +143,7 @@ public class PersonalCenterFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-//            new DownloadCollectCountTask(mContext).execute();
+            new DownloadCollectCountTask(mContext).execute();
             initData();
         }
     }
@@ -161,6 +164,8 @@ public class PersonalCenterFragment extends Fragment {
                 case R.id.rl_personal_center:
                     startActivity(new Intent(mContext, SettingsActivity.class));
                     break;
+                case R.id.ll_collect:
+                    startActivity(new Intent(mContext,SettingsActivity.class));
             }
         }
     }

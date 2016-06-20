@@ -330,7 +330,9 @@ public class LoginActivity extends BaseActivity {
             pd.dismiss();
         }
         String action = getIntent().getStringExtra("action");
+        Log.e(TAG, "action" + action);
         if (action != null) {
+            sendStickyBroadcast(new Intent("update_user"));
             // 进入主页面
             Intent intent = new Intent(LoginActivity.this,
                     fuliCenterMainActivity.class)

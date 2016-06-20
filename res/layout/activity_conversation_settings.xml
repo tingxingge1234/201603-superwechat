@@ -10,15 +10,7 @@
         android:layout_height="@dimen/height_top_bar"
         android:background="@color/top_bar_normal_bg"
         android:gravity="center_vertical" >
-
-        <TextView
-            android:id="@+id/message_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/set"
-            android:textColor="#fff"
-            android:textSize="18sp" />
+        <include layout="@layout/item_back_title_white"/>
     </RelativeLayout>
 
     <ScrollView

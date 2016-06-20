@@ -153,11 +153,6 @@
             android:name=".activity.BlacklistActivity"
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide" />
-        <activity
-            android:name=".activity.PublicChatRoomsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
-            android:windowSoftInputMode="adjustPan" />
 
         <!-- 语音通话 -->
         <activity
