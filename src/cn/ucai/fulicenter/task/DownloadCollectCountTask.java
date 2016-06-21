@@ -45,7 +45,7 @@ public class DownloadCollectCountTask extends BaseActivity {
         Log.e(TAG, "username=" + username);
         try {
             path = new ApiParams()
-                    .with(I.User.USER_NAME, username)
+                    .with(I.Collect.USER_NAME, username)
                     .getRequestUrl(I.REQUEST_FIND_COLLECT_COUNT);
             Log.e(TAG, "path=" + path);
         } catch (Exception e) {
