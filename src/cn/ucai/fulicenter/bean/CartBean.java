@@ -21,7 +21,31 @@ public class CartBean implements Serializable {
     private int goodsId;
     private int count;
     private boolean checked;
-    private String goods;
+    private GoodDetailsBean goods;
+
+    public GoodDetailsBean getGoods() {
+        return goods;
+    }
+
+    public void setGoods(GoodDetailsBean goods) {
+        this.goods = goods;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public CartBean(int id, int userName, int goodsId, int count, boolean checked) {
         this.id = id;

@@ -18,9 +18,11 @@ import android.content.Context;
 
 import com.easemob.EMCallBack;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.bean.Contact;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.RequestManager;
@@ -47,6 +49,15 @@ public class FuliCenterApplication extends Application {
 	 */
 	public static String currentUserNick = "";
 	public static DemoHXSDKHelper hxSDKHelper = new DemoHXSDKHelper();
+	public ArrayList<CartBean> cartList = new ArrayList<CartBean>();
+
+	public ArrayList<CartBean> getCartList() {
+		return cartList;
+	}
+
+	public void setCartList(ArrayList<CartBean> cartList) {
+		this.cartList = cartList;
+	}
 
 	@Override
 	public void onCreate() {

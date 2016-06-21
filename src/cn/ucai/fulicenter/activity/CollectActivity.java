@@ -1,5 +1,9 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -53,6 +57,7 @@ public class CollectActivity extends BaseActivity {
     private void setListener() {
         setPullDownRefreshListener();
         setPullUpRefreshListener();
+        registerUpdateCollectListener();
     }
 
     /**
@@ -184,5 +189,27 @@ public class CollectActivity extends BaseActivity {
         mAdapter = new CollectAdapter(mContext,mCollectList);
         mRecyclerView.setAdapter(mAdapter);
         DisPlayUtils.initBackwithTitle(mContext,"收藏的宝贝");
+    }
+
+    class UpdateCollectListReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+        }
+    }
+    UpdateCollectListReceiver mReceiver;
+    private void registerUpdateCollectListener() {
+        mReceiver = new UpdateCollectListReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
     }
 }
