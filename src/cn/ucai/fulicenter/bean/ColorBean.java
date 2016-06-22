@@ -3,7 +3,7 @@ package cn.ucai.fulicenter.bean;
 import java.io.Serializable;
 
 /**
- * Created by Administrator on 2016/6/13 0013.
+ * Created by ucai001 on 2016/3/1.
  */
 public class ColorBean implements Serializable {
 
@@ -21,6 +21,46 @@ public class ColorBean implements Serializable {
     private String colorCode;
     private String colorImg;
 
+    public void setCatId(int catId) {
+        this.catId = catId;
+    }
+
+    public void setColorId(int colorId) {
+        this.colorId = colorId;
+    }
+
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
+    }
+
+    public void setColorCode(String colorCode) {
+        this.colorCode = colorCode;
+    }
+
+    public void setColorImg(String colorImg) {
+        this.colorImg = colorImg;
+    }
+
+    public int getCatId() {
+        return catId;
+    }
+
+    public int getColorId() {
+        return colorId;
+    }
+
+    public String getColorName() {
+        return colorName;
+    }
+
+    public String getColorCode() {
+        return colorCode;
+    }
+
+    public String getColorImg() {
+        return colorImg;
+    }
+
     @Override
     public String toString() {
         return "ColorBean{" +
@@ -30,45 +70,5 @@ public class ColorBean implements Serializable {
                 ", colorCode='" + colorCode + '\'' +
                 ", colorImg='" + colorImg + '\'' +
                 '}';
-    }
-
-    public int getCatId() {
-        return catId;
-    }
-
-    public void setCatId(int catId) {
-        this.catId = catId;
-    }
-
-    public int getColorId() {
-        return colorId;
-    }
-
-    public void setColorId(int colorId) {
-        this.colorId = colorId;
-    }
-
-    public String getColorName() {
-        return colorName;
-    }
-
-    public void setColorName(String colorName) {
-        this.colorName = colorName;
-    }
-
-    public String getColorCode() {
-        return colorCode;
-    }
-
-    public void setColorCode(String colorCode) {
-        this.colorCode = colorCode;
-    }
-
-    public String getColorImg() {
-        return colorImg;
-    }
-
-    public void setColorImg(String colorImg) {
-        this.colorImg = colorImg;
     }
 }

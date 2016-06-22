@@ -32,11 +32,6 @@ public class DownloadCartListTask extends BaseActivity {
         initPath();
     }
 
-    public DownloadCartListTask(Context mContext, String username) {
-        this.mContext = mContext;
-        this.username = username;
-    }
-
     private void initPath() {
         username = FuliCenterApplication.getInstance().getUserName();
         Log.e(TAG, "username=" + username);

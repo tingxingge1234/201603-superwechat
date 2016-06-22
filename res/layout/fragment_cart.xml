@@ -10,7 +10,7 @@
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="70dp"
             android:background="#fff"
             >
             <TextView
@@ -24,7 +24,7 @@
 
                 android:text="买买买"/>
             <TextView
-                android:id="@+id/tv_price"
+                android:id="@+id/tv_sum_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/tv_buy"
@@ -42,7 +42,7 @@
                 android:textSize="18sp"
                 android:paddingTop="3dp"
                 android:paddingRight="100dp"
-                android:layout_below="@id/tv_price"
+                android:layout_below="@id/tv_sum_price"
                 android:text="222"/>
             <TextView
                 android:id="@+id/tv_count"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="5dp"
                 android:textColor="#f50dda"
-                android:layout_toLeftOf="@id/tv_price"
+                android:layout_toLeftOf="@id/tv_sum_price"
                 android:paddingRight="30dp"
                 android:textSize="18sp"
                 android:text="合计:"/>
@@ -66,15 +66,11 @@
                 android:textSize="18sp"
                 android:layout_below="@id/tv_count"
                 android:text="节省:"/>
-
-
-
-
         </RelativeLayout>
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/srl_cart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="400dp"
             android:background="@color/list_background">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -91,9 +87,16 @@
                     android:id="@+id/rv_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                 </android.support.v7.widget.RecyclerView>
             </LinearLayout>
+
         </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+            android:id="@+id/tvNothing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="购物车没有商品"/>
     </LinearLayout>
 
 </FrameLayout>

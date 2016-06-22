@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.fragment.BoutiqueFragment;
@@ -37,11 +39,12 @@ public class fuliCenterMainActivity extends BaseActivity {
     CartFragment mCartFragment;
     PersonalCenterFragment mPersonalCenterFragment;
     Fragment[] mFragments = new Fragment[5];
-
+    String update_cart_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fuli_center_main);
+        update_cart_list = getIntent().getStringExtra("update_cart_list");
         initFragment();
         // 添加显示第一个fragment
         getSupportFragmentManager().beginTransaction()
@@ -49,8 +52,6 @@ public class fuliCenterMainActivity extends BaseActivity {
                 .add(R.id.fl_contains,mBoutiqueFragment).hide(mBoutiqueFragment)
 //                .add(R.id.fragment_container, contactListFragment)
                 .add(R.id.fl_contains,mCategoryFragment).hide(mCategoryFragment)
-                .add(R.id.fl_contains,mCartFragment).hide(mCartFragment)
-                .add(R.id.fl_contains,mPersonalCenterFragment).hide(mPersonalCenterFragment)
                 .show(mNewGoodFragment)
                 .commit();
         initView();
@@ -71,7 +72,8 @@ public class fuliCenterMainActivity extends BaseActivity {
     }
 
     private void initView() {
-        String update_cart_list = getIntent().getStringExtra("update_cart_list");
+
+
         mRadioNewGood = (RadioButton) findViewById(R.id.new_good);
         mRadioBoutique = (RadioButton) findViewById(R.id.boutique);
         mRadioCategory = (RadioButton) findViewById(R.id.categroy);
@@ -99,18 +101,19 @@ public class fuliCenterMainActivity extends BaseActivity {
                 if (FuliCenterApplication.getInstance().getUser() != null) {
                     index = 3;
                 } else {
-                    gotoLogin();
+                    gotoLogin(I.ACTION_CART);
                 }
                 break;
             case R.id.personal_center:
                 if (FuliCenterApplication.getInstance().getUser() != null) {
                     index = 4;
                 } else {
-                    gotoLogin();
+                    gotoLogin(I.ACTION_PERSONAL);
                 }
                 break;
         }
         if (currentTabIndex != index) {
+            Log.e(TAG, "cartlist=" + update_cart_list);
             Log.e(TAG, "index" + index);
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(mFragments[currentTabIndex]);
@@ -124,8 +127,8 @@ public class fuliCenterMainActivity extends BaseActivity {
         }
     }
 
-    private void gotoLogin() {
-        startActivity(new Intent(this,LoginActivity.class).putExtra("action","personal"));
+    private void gotoLogin(String action) {
+        startActivity(new Intent(this,LoginActivity.class).putExtra("action",action));
     }
 
     private void setRadioChecked(int index) {
@@ -145,8 +148,11 @@ public class fuliCenterMainActivity extends BaseActivity {
         Log.e(TAG,"user="+FuliCenterApplication.getInstance().getUser());
         String action = getIntent().getStringExtra("action");
         if (action!=null&&FuliCenterApplication.getInstance().getUser() != null) {
-            if (action.equals("personal")) {
+            if (action.equals(I.ACTION_PERSONAL)) {
                 index = 4;
+            }
+            if (action.equals(I.ACTION_CART)) {
+                index = 3;
             }
         } else {
             setRadioChecked(index);
@@ -192,8 +198,9 @@ public class fuliCenterMainActivity extends BaseActivity {
     UpdateCartReceiver mReceiver;
     private void registerCartReceiver() {
         mReceiver = new UpdateCartReceiver();
-        IntentFilter filter = new IntentFilter();
+        IntentFilter filter = new IntentFilter("update_cart_list");
         filter.addAction("update_user");
+        filter.addAction("update_cart");
         registerReceiver(mReceiver, filter);
     }
 
@@ -204,4 +211,5 @@ public class fuliCenterMainActivity extends BaseActivity {
             unregisterReceiver(mReceiver);
         }
     }
+
 }

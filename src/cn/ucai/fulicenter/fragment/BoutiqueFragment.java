@@ -30,6 +30,7 @@ import cn.ucai.fulicenter.utils.Utils;
  * A simple {@link Fragment} subclass.
  */
 public class BoutiqueFragment extends Fragment {
+    public static final String TAG= BoutiqueFragment.class.getName();
     fuliCenterMainActivity mContext;
     ArrayList<BoutiqueBean> mBoutiqueList;
     BoutiqueAdapter mAdapter;
@@ -97,6 +98,7 @@ public class BoutiqueFragment extends Fragment {
         try {
             path = new ApiParams()
                     .getRequestUrl(I.REQUEST_FIND_BOUTIQUES);
+            Log.e(TAG, "path=" + path);
             return path;
         } catch (Exception e) {
             e.printStackTrace();

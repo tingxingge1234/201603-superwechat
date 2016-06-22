@@ -21,8 +21,12 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.activity.GoodDetailActivity;
 import cn.ucai.fulicenter.bean.CartBean;
+import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.bean.NewGoodBean;
+import cn.ucai.fulicenter.fragment.CartFragment;
+import cn.ucai.fulicenter.task.UpdateCartTask;
 import cn.ucai.fulicenter.utils.ImageUtils;
+import cn.ucai.fulicenter.utils.Utils;
 import cn.ucai.fulicenter.view.FooterViewHolder;
 
 /**
@@ -31,8 +35,7 @@ import cn.ucai.fulicenter.view.FooterViewHolder;
 public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     Context mContext;
     ArrayList<CartBean> mCartList;
-    ViewGroup parent;
-    static final int TYPE_ITEM = 0;
+    GoodDetailsBean good;
     boolean isMore;
 
     public CartAdapter(Context context, ArrayList<CartBean> mCartList) {
@@ -72,42 +75,52 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        CartItemViewHolder holder1 = (CartItemViewHolder)holder;
+        final int checkboxType;
+        final CartItemViewHolder holder1 = (CartItemViewHolder)holder;
         final CartBean cart = mCartList.get(position);
         holder1.mtvGoodName.setText(cart.getUserName());
-        holder1.mtvPrice.setText(cart.getGoods().getShopPrice());
-        holder1.mtvCount.setText(cart.getCount());
+        holder1.mtvPrice.setText(""+cart.getGoods().getShopPrice());
+        holder1.mtvCount.setText(""+cart.getCount());
         if (cart.isChecked()) {
+            checkboxType = 1;
             holder1.mivCheckbox.setImageResource(R.drawable.checkbox_pressed);
         } else {
+            checkboxType = 0;
             holder1.mivCheckbox.setImageResource(R.drawable.checkbox_normal);
         }
         String imgUrl = cart.getGoods().getGoodsImg();
         String url = I.REQUEST_FIND_CARTS+imgUrl;
         ImageUtils.setThumb(url,holder1.mGoodAvatar);
-        holder1.mivSub.setOnClickListener(new View.OnClickListener() {
+        AddDelCarClickListener listener = new AddDelCarClickListener();
+        holder1.mivSub.setOnClickListener(listener);
+        holder1.mivSum.setOnClickListener(listener);
+        holder1.ll_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //减少购物车商品数量
+                //进入商品详情
             }
         });
-        holder1.mivSum.setOnClickListener(new View.OnClickListener() {
+        holder1.mivCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //增加购物车商品数量
+                if (checkboxType == 0) {
+                    holder1.mivCheckbox.setImageResource(R.drawable.checkbox_pressed);
+                    cart.setChecked(true);
+                }
+                if (checkboxType == 1) {
+                    holder1.mivCheckbox.setImageResource(R.drawable.checkbox_normal);
+                    cart.setChecked(false);
+                }
+                new UpdateCartTask(mContext,cart).execute();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mCartList.size();
+        return mCartList==null?0:mCartList.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-            return TYPE_ITEM;
-    }
 
     class CartItemViewHolder extends RecyclerView.ViewHolder {
         NetworkImageView mGoodAvatar;
@@ -118,7 +131,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             super(itemView);
             mGoodAvatar = (NetworkImageView) itemView.findViewById(R.id.nivGoodAvatar);
             mtvGoodName = (TextView) itemView.findViewById(R.id.tv_cart_good_name);
-            mtvCount = (TextView) itemView.findViewById(R.id.tv_cart_count);
+            mtvCount = (TextView) itemView.findViewById(R.id.tv_good_count);
             mtvPrice = (TextView) itemView.findViewById(R.id.tv_cart_price);
             mivCheckbox = (ImageView) itemView.findViewById(R.id.iv_checkbox);
             mivSub = (ImageView) itemView.findViewById(R.id.iv_sub);
@@ -128,5 +141,19 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
+    class AddDelCarClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.iv_sum:
+                    Utils.addCart(mContext,good);
+                    break;
+                case R.id.iv_sub:
+                    Utils.delCart(mContext, good);
+                    break;
+            }
+        }
+    }
 
 }

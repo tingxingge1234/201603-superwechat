@@ -414,5 +414,7 @@ public interface I {
 
     int ACTION_ADD_COLLECT = 1;
     int ACTION_DEL_COLLECT = 2;
+    String ACTION_CART= "cart";
+    String ACTION_PERSONAL = "personal";
 
 }

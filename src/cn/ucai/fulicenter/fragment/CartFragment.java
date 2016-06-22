@@ -1,7 +1,10 @@
 package cn.ucai.fulicenter.fragment;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -49,6 +52,7 @@ public class CartFragment extends Fragment {
     SwipeRefreshLayout msrl;
     RecyclerView mRecyclerView;
     TextView mtvHint,mtvBuy;
+    TextView mtvSumPrice,mtvSavePrice,mtvNothing;
     LinearLayoutManager mLayoutManager;
     public CartFragment() {
         // Required empty public constructor
@@ -69,9 +73,18 @@ public class CartFragment extends Fragment {
     }
 
     private void initData() {
-        getPath(pageId);
-        mContext.executeRequest(new GsonRequest<CartBean[]>(path, CartBean[].class,
-                responseDownloadCartListener(), mContext.errorListener()));
+//        getPath(pageId);
+        ArrayList<CartBean> cartList = FuliCenterApplication.getInstance().getCartList();
+        mCartList.clear();
+        mCartList.addAll(cartList);
+        sumPrice();
+        if (mCartList == null || mCartList.size() == 0) {
+            mtvNothing.setVisibility(View.VISIBLE);
+        } else {
+            mtvNothing.setVisibility(View.GONE);
+        }
+//        mContext.executeRequest(new GsonRequest<CartBean[]>(path, CartBean[].class,
+//                responseDownloadCartListener(), mContext.errorListener()));
     }
 
     private Response.Listener<CartBean[]> responseDownloadCartListener() {
@@ -82,19 +95,6 @@ public class CartFragment extends Fragment {
                 if (cartBeen != null) {
                     Log.e(TAG,"CartBean="+cartBeen.length);
                     mCartList = Utils.array2List(cartBeen);
-                    try {
-                        for (CartBean cart : mCartList) {
-                            path = new ApiParams()
-                                    .with(I.Collect.USER_NAME, cart.getUserName()+"")
-                                    .with(I.Collect.GOODS_ID, cart.getGoodsId() + "")
-                                    .getRequestUrl(I.REQUEST_DELETE_COLLECT);
-                            Log.e(TAG, "path=" + path);
-                            mContext.executeRequest(new GsonRequest<GoodDetailsBean>(path, GoodDetailsBean.class,
-                                    responseDownloadGoodDetailListener(cart), mContext.errorListener()));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     mAdapter.setMore(true);
                     msrl.setRefreshing(false);
                     mtvHint.setVisibility(View.GONE);
@@ -112,21 +112,6 @@ public class CartFragment extends Fragment {
             }
         };
     }
-    private Response.Listener<GoodDetailsBean> responseDownloadGoodDetailListener(final CartBean cart) {
-        return new Response.Listener<GoodDetailsBean>() {
-            @Override
-            public void onResponse(GoodDetailsBean goodDetailsBean) {
-                if (goodDetailsBean != null) {
-                    cart.setGoods(goodDetailsBean);
-                    ArrayList<CartBean> cartList = FuliCenterApplication.getInstance().getCartList();
-                    if (!cartList.contains(cart)) {
-                        cartList.add(cart);
-                    }
-                }
-            }
-        };
-    }
-
 
     private String getPath(int pageId) {
         username = FuliCenterApplication.getInstance().getUserName();
@@ -148,6 +133,7 @@ public class CartFragment extends Fragment {
     private void setListener() {
         setPullDownRefreshListener();
         setPullUpRefreshListener();
+        registerUpdateCartListener();
     }
 
     /**
@@ -211,6 +197,52 @@ public class CartFragment extends Fragment {
         mAdapter = new CartAdapter(mContext, mCartList);
         mRecyclerView.setAdapter(mAdapter);
         mtvBuy = (TextView) layout.findViewById(R.id.tv_buy);
+        mtvSumPrice = (TextView) layout.findViewById(R.id.tv_sum_price);
+        mtvSavePrice = (TextView) layout.findViewById(R.id.tv_save_price);
+        mtvNothing = (TextView) layout.findViewById(R.id.tvNothing);
+    }
+    public void  sumPrice() {
+        int sumPrice = 0;
+        int currentPrice = 0;
+        if (mCartList != null && mCartList.size() > 0) {
+            for (CartBean cart : mCartList) {
+                GoodDetailsBean goods = cart.getGoods();
+                if (goods != null&&cart.isChecked()) {
+                    sumPrice+=convertPrice(goods.getRankPrice())*cart.getCount();
+                    currentPrice += convertPrice(goods.getCurrencyPrice())*cart.getCount();
+                }
+            }
+        }
+        int savePrice = sumPrice-currentPrice;
+        mtvSumPrice.setText("￥"+sumPrice);
+        mtvSavePrice.setText("￥"+savePrice);
     }
 
+    private int convertPrice(String price) {
+        price = price.substring(price.indexOf("￥")+1);
+        int p1 = Integer.parseInt(price);
+        return p1;
+    }
+
+    class UpdateCartReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+        }
+    }
+    UpdateCartReceiver mReceiver;
+    private void registerUpdateCartListener() {
+        mReceiver = new UpdateCartReceiver();
+        IntentFilter filter = new IntentFilter("update_cart");
+        mContext.registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mReceiver != null) {
+            mContext.unregisterReceiver(mReceiver);
+        }
+    }
 }

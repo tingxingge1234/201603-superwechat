@@ -28,7 +28,7 @@ import cn.ucai.fulicenter.bean.CategoryChildBean;
 import cn.ucai.fulicenter.bean.ColorBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.bean.NewGoodBean;
-import cn.ucai.fulicenter.bean.Properties;
+import cn.ucai.fulicenter.bean.PropertyBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.Utils;
@@ -144,7 +144,7 @@ public class ColorFilterButton extends Button {
                             NewGoodBean good=new NewGoodBean();
                             good.setAddTime(goodDetails.getAddTime());
                             good.setCatId(goodDetails.getCatId());
-                            Properties p = goodDetails.getPropertyBean()[0];
+                            PropertyBean p = goodDetails.getProperties()[0];
                             good.setColorCode(p.getColorCode());
                             good.setColorId(p.getColorId());
                             good.setColorName(p.getColorName());

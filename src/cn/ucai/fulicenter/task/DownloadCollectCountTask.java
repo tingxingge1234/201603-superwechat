@@ -2,24 +2,16 @@ package cn.ucai.fulicenter.task;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.http.LoggingEventHandler;
 import android.util.Log;
 
 import com.android.volley.Response;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.activity.BaseActivity;
-import cn.ucai.fulicenter.bean.Contact;
-import cn.ucai.fulicenter.bean.Message;
 import cn.ucai.fulicenter.bean.MessageBean;
-import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
-import cn.ucai.fulicenter.utils.Utils;
 
 /**
  * Created by Administrator on 2016/6/20 0020.
