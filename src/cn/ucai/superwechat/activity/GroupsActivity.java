@@ -44,7 +44,7 @@ import cn.ucai.superwechat.bean.Group;
 import com.easemob.util.EMLog;
 
 public class GroupsActivity extends BaseActivity {
-	public static final String TAG = "GroupsActivity";
+	public static final String TAG = GroupsActivity.class.getName();
 	private ListView groupListView;
 	protected ArrayList<Group> grouplist;
 	private GroupAdapter groupAdapter;

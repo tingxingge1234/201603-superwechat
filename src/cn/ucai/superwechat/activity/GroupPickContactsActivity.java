@@ -21,6 +21,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -44,6 +45,7 @@ import cn.ucai.superwechat.adapter.ContactAdapter;
 import cn.ucai.superwechat.domain.EMUser;
 
 public class GroupPickContactsActivity extends BaseActivity {
+	public static final String TAG = GroupPickContactsActivity.class.getName();
 	private ListView listView;
 	/** 是否为一个新建的群组 */
 	protected boolean isCreatingNewGroup;
@@ -105,8 +107,33 @@ public class GroupPickContactsActivity extends BaseActivity {
 	 * @param v
 	 */
 	public void save(View v) {
-		setResult(RESULT_OK, new Intent().putExtra("newmembers", getToBeAddMembers()));
+		setResult(RESULT_OK, new Intent()
+				.putExtra("newmembersid", getToBeAddMembersId())
+				.putExtra("newmembersname",getToBeAddMembersName()));
 		finish();
+	}
+
+	private String[] getToBeAddMembersName() {
+		String[] mContactCname = new String[0];
+		int length = contactAdapter.isCheckedArray.length;
+		Log.e(TAG, "length=" + length);
+		for (int i = 0; i < length; i++) {
+			Contact contact = contactAdapter.getItem(i);
+			if (contactAdapter.isCheckedArray[i] && !exitingMembers.contains(contact.getMContactCname())) {
+				mContactCname = Utils.add(mContactCname, contact.getMContactCname());
+			}
+		}
+		if (mContactCname.length>0) {
+			for (String con : mContactCname) {
+				con.toString();
+				Log.e(TAG, "con.toString()=" + con.toString());
+			}
+			Log.e(TAG, "contacts=" + mContactCname);
+			Log.e(TAG, "contacts-length=" + mContactCname.length);
+			return mContactCname;
+		}
+
+		return null;
 	}
 
 	/**
@@ -114,17 +141,24 @@ public class GroupPickContactsActivity extends BaseActivity {
 	 * 
 	 * @return
 	 */
-	private Contact[] getToBeAddMembers() {
-		Contact[] contacts = new Contact[0];
+	private String[] getToBeAddMembersId() {
+		String[] mContactId = new String[0];
 		int length = contactAdapter.isCheckedArray.length;
+		Log.e(TAG, "length=" + length);
 		for (int i = 0; i < length; i++) {
 			Contact contact = contactAdapter.getItem(i);
 			if (contactAdapter.isCheckedArray[i] && !exitingMembers.contains(contact.getMContactCname())) {
-				contacts = Utils.add(contacts, contact);
+				mContactId = Utils.add(mContactId, contact.getMContactId()+"");
 			}
 		}
-		if (contacts.length>0) {
-			return contacts;
+		if (mContactId.length>0) {
+			for (String con : mContactId) {
+				con.toString();
+				Log.e(TAG, "con.toString()=" + con.toString());
+			}
+			Log.e(TAG, "contacts=" + mContactId);
+			Log.e(TAG, "contacts-length=" + mContactId.length);
+			return mContactId;
 		}
 
 		return null;

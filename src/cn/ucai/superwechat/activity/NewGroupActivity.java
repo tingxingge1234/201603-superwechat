@@ -16,6 +16,7 @@ package cn.ucai.superwechat.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 
 import java.io.File;
+import java.io.Serializable;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
@@ -49,6 +51,7 @@ import cn.ucai.superwechat.utils.ImageUtils;
 import cn.ucai.superwechat.utils.Utils;
 
 public class NewGroupActivity extends BaseActivity {
+	public static final String TAG = NewGroupActivity.class.getName();
 	private EditText groupNameEditText;
 	private ProgressDialog progressDialog;
 	private EditText introductionEditText;
@@ -108,6 +111,7 @@ public class NewGroupActivity extends BaseActivity {
 					startActivity(intent);
 				} else {
 					// 进通讯录选人
+					Log.e(TAG, "222222222");
 					startActivityForResult(new Intent(mContext, GroupPickContactsActivity.class)
 							.putExtra("groupName", name), CREATE_NEW_GROUP);
 				}
@@ -139,6 +143,7 @@ public class NewGroupActivity extends BaseActivity {
 		}
 		if (requestCode == CREATE_NEW_GROUP ) {
 			//新建群组
+			Log.e(TAG, "onActivityResult");
 			createNewGroup(data);
 		} else {
 			mOnSetAvatarListener.setAvatar(requestCode,data,miv_group_avatar);
@@ -163,17 +168,24 @@ public class NewGroupActivity extends BaseActivity {
 			@Override
 			public void run() {
 				// 调用sdk创建群组方法
+				Log.e(TAG, "createNewGroup111111111111111111=" );
 				String groupName = groupNameEditText.getText().toString().trim();
 				String desc = introductionEditText.getText().toString();
-				Contact[] Contacts = (Contact[])data.getSerializableExtra("newmembers");
+				String test = data.getStringExtra("test");
+				Log.e(TAG, "test=" + test);
+//				String[] Contacts = (String[])data.getSerializableExtra("newmembers");
+				String[] contactId = (String[])data.getSerializableExtra("newmembersid");
+				String[] contactName = (String[])data.getSerializableExtra("newmembersname");
+				Log.e(TAG, "contacts-contactId=" + contactId);
+				Log.e(TAG, "contacts-contactName=" + contactName);
 				String[] members = null;
 				String[] memberIds = null;
-				if (Contacts != null) {
-					members = new String[Contacts.length];
-					memberIds = new String[Contacts.length];
-					for (int i = 0; i <Contacts.length ; i++) {
-						members[i] = Contacts[i].getMContactCname() + "";
-						memberIds[i] = Contacts[i].getMContactId() + "";
+				if (contactId != null) {
+					members = new String[contactName.length];
+					memberIds = new String[contactId.length];
+					for (int i = 0; i <contactId.length ; i++) {
+						members[i] = contactName[i].toString() + "";
+						memberIds[i] = contactId[i].toString() + "";
 					}
 				}
 				EMGroup emGroup;
@@ -187,7 +199,7 @@ public class NewGroupActivity extends BaseActivity {
 						emGroup=EMGroupManager.getInstance().createPrivateGroup(groupName, desc, members, memberCheckbox.isChecked(),200);
 					}
 					String hxid = emGroup.getGroupId();
-					createNewGroupAppServer(hxid, groupName, desc, Contacts);
+					createNewGroupAppServer(hxid, groupName, desc, contactId,contactName);
 					runOnUiThread(new Runnable() {
 						public void run() {
 							progressDialog.dismiss();
@@ -209,7 +221,7 @@ public class NewGroupActivity extends BaseActivity {
 
 	}
 
-	private void createNewGroupAppServer(String hxid, String groupName, String desc, final Contact[] contacts) {
+	private void createNewGroupAppServer(String hxid, String groupName, String desc, final String[] contactId,final String[] contactName) {
 		User user = SuperWeChatApplication.getInstance().getUser();
 		File file = new File(ImageUtils.getAvatarPath(mContext, I.AVATAR_TYPE_GROUP_PATH),avatarName+I.AVATAR_SUFFIX_JPG);
 		boolean isInvites = memberCheckbox.isChecked();
@@ -231,8 +243,8 @@ public class NewGroupActivity extends BaseActivity {
 						@Override
 						public void onSuccess(Group result) {
 							if (result.isResult()) {
-								if (contacts != null) {
-									addGroupMembers(result,contacts);
+								if (contactId != null&&contactName!=null) {
+									addGroupMembers(result,contactId,contactName);
 								} else {
 									SuperWeChatApplication.getInstance().getGroupList().add(result);
 									progressDialog.dismiss();
@@ -257,12 +269,12 @@ public class NewGroupActivity extends BaseActivity {
 					});
 	}
 
-	private void addGroupMembers(Group group,Contact[] contacts) {
+	private void addGroupMembers(Group group,String[] contactId,String[] contactName) {
 		String userId="";
 		String userName="";
-		for (int i = 0; i <contacts.length ; i++) {
-			userId += contacts[i].getMContactId()+",";
-			userName += contacts[i].getMContactCname() + ",";
+		for (int i = 0; i <contactId.length ; i++) {
+			userId += contactId[i].toString()+",";
+			userName += contactName[i].toString() + ",";
 		}
 		try {
 			String path = new ApiParams()
