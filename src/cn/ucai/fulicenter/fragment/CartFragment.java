@@ -1,12 +1,12 @@
 package cn.ucai.fulicenter.fragment;
 
 
+import android.support.v4.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -33,7 +33,6 @@ import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.Utils;
 
 /**
- * A simple {@link Fragment} subclass.
  */
 public class CartFragment extends Fragment {
     public static final String TAG = CartFragment.class.getName();
@@ -75,8 +74,10 @@ public class CartFragment extends Fragment {
     private void initData() {
 //        getPath(pageId);
         ArrayList<CartBean> cartList = FuliCenterApplication.getInstance().getCartList();
+        Log.e(TAG, "cartList=" + cartList);
         mCartList.clear();
         mCartList.addAll(cartList);
+
         sumPrice();
         if (mCartList == null || mCartList.size() == 0) {
             mtvNothing.setVisibility(View.VISIBLE);
@@ -94,7 +95,7 @@ public class CartFragment extends Fragment {
                 Log.e(TAG,"CartBean="+cartBeen);
                 if (cartBeen != null) {
                     Log.e(TAG,"CartBean="+cartBeen.length);
-                    mCartList = Utils.array2List(cartBeen);
+//                    mCartList = Utils.array2List(cartBeen);
                     mAdapter.setMore(true);
                     msrl.setRefreshing(false);
                     mtvHint.setVisibility(View.GONE);
@@ -150,9 +151,10 @@ public class CartFragment extends Fragment {
                         msrl.setRefreshing(true);
                         action = I.ACTION_PULL_UP;
                         pageId+=I.PAGE_SIZE_DEFAULT;
-                        getPath(pageId);
-                        mContext.executeRequest(new GsonRequest<CartBean[]>(path, CartBean[].class,
-                                responseDownloadCartListener(), mContext.errorListener()));
+                        initData();
+//                        getPath(pageId);
+//                        mContext.executeRequest(new GsonRequest<CartBean[]>(path, CartBean[].class,
+//                                responseDownloadCartListener(), mContext.errorListener()));
                     }
                 }
             }
@@ -175,9 +177,10 @@ public class CartFragment extends Fragment {
                 mtvHint.setVisibility(View.VISIBLE);
                 pageId = 0;
                 action = I.ACTION_PULL_DOWN;
-                getPath(pageId);
-                mContext.executeRequest(new GsonRequest<CartBean[]>(path, CartBean[].class,
-                        responseDownloadCartListener(), mContext.errorListener()));
+                initData();
+//                getPath(pageId);
+//                mContext.executeRequest(new GsonRequest<CartBean[]>(path, CartBean[].class,
+//                        responseDownloadCartListener(), mContext.errorListener()));
             }
         });
     }
@@ -191,7 +194,9 @@ public class CartFragment extends Fragment {
                 R.color.google_yellow
         );
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.rv_cart);
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mtvHint = (TextView) layout.findViewById(R.id.tvRefreshHint);
         mAdapter = new CartAdapter(mContext, mCartList);

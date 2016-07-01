@@ -25,6 +25,7 @@ import cn.ucai.fulicenter.view.FooterViewHolder;
  * Created by Administrator on 2016/6/15 0015.
  */
 public class BoutiqueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+    public static final String TAG= BoutiqueAdapter.class.getName();
     Context mContext;
     ArrayList<BoutiqueBean> mBoutiqueList;
     ViewGroup parent;
@@ -67,6 +68,8 @@ public class BoutiqueAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = null;
         View layout = null;
+        Log.e(TAG, "onCreateViewHolder-viewType" + viewType);
+        Log.e(TAG, "onCreateViewHolder-parent" + parent);
         final LayoutInflater filter = LayoutInflater.from(mContext);
         switch (viewType) {
             case TYPE_ITEM:

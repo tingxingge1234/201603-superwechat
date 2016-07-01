@@ -45,7 +45,8 @@ public class DownloadCollectCountTask extends BaseActivity {
         }
     }
     public void execute() {
-        executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class, responseDownloadCollectCountTaskListener(), errorListener()));
+        executeRequest(new GsonRequest<MessageBean>(path, MessageBean.class,
+                responseDownloadCollectCountTaskListener(), errorListener()));
     }
 
     private Response.Listener<MessageBean> responseDownloadCollectCountTaskListener() {

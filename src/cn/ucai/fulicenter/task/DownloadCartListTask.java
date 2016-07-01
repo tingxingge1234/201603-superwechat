@@ -64,7 +64,7 @@ public class DownloadCartListTask extends BaseActivity {
                             path = new ApiParams()
                                     .with(I.Collect.USER_NAME, cart.getUserName()+"")
                                     .with(I.Collect.GOODS_ID, cart.getGoodsId() + "")
-                                    .getRequestUrl(I.REQUEST_DELETE_COLLECT);
+                                    .getRequestUrl(I.REQUEST_FIND_GOOD_DETAILS);
                             Log.e(TAG, "path=" + path);
                             executeRequest(new GsonRequest<GoodDetailsBean>(path, GoodDetailsBean.class,
                                     responseDownloadGoodDetailListener(cart), errorListener()));

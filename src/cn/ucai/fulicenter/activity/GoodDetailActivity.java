@@ -178,7 +178,8 @@ public class GoodDetailActivity extends BaseActivity {
             String path = new ApiParams()
                     .with(D.NewGood.KEY_GOODS_ID, mGoodsId + "")
                     .getRequestUrl(I.REQUEST_FIND_GOOD_DETAILS);
-            executeRequest(new GsonRequest<GoodDetailsBean>(path, GoodDetailsBean.class, responseDownloadGoodDetailsListener(), errorListener()));
+            executeRequest(new GsonRequest<GoodDetailsBean>(path, GoodDetailsBean.class,
+                    responseDownloadGoodDetailsListener(), errorListener()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,7 +208,7 @@ public class GoodDetailActivity extends BaseActivity {
 
     private void initColorsBanner() {
         //设置第一个颜色的图片轮播
-        updateColor(0);
+            updateColor(0);
         for (int i = 0; i < mGoodDetails.getProperties().length; i++) {
             mCurrentColor = i;
             View layout = View.inflate(mContext, R.layout.layout_property_color, null);

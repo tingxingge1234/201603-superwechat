@@ -4,6 +4,7 @@ package cn.ucai.fulicenter.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.media.RatingCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,6 +33,7 @@ import cn.ucai.fulicenter.utils.Utils;
  * A simple {@link Fragment} subclass.
  */
 public class CategoryFragment extends Fragment {
+    public static final String TAG = CategoryFragment.class.getName();
     ArrayList<CategoryGroupBean> mGroupList;
     ArrayList<ArrayList<CategoryChildBean>> mChildList;
     fuliCenterMainActivity mContext;
@@ -75,16 +77,16 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onResponse(CategoryChildBean[] categoryChildBeen) {
                 groupCount++;
-                Log.e("error", "groupCount=" + groupCount);
-                Log.e("error", "categorychild" + categoryChildBeen);
+                Log.e(TAG, "groupCount=" + groupCount);
+                Log.e(TAG, "categorychild" + categoryChildBeen);
                 if (categoryChildBeen != null) {
                     ArrayList<CategoryChildBean> childList = Utils.array2List(categoryChildBeen);
                     if (childList != null) {
                         mChildList.set(i, childList);
                     }
-                    Log.e("error", "childList=" + childList);
+                    Log.e(TAG, "childList=" + childList);
                 }
-                Log.e("error", "mGroupList.size()=" + mGroupList.size());
+                Log.e(TAG, "mGroupList.size()=" + mGroupList.size());
                 if (mGroupList.size() == groupCount) {
                     mAdapter.addItems(mGroupList,mChildList);
                 }
@@ -96,7 +98,7 @@ public class CategoryFragment extends Fragment {
 //        mGroupList = new ArrayList<CategoryGroupBean>();
 //        mChildList = new ArrayList<ArrayList<CategoryChildBean>>();
         getPath();
-        Log.e("error", "grouppath=" + path);
+        Log.e(TAG, "grouppath=" + path);
         mContext.executeRequest(new GsonRequest<CategoryGroupBean[]>(path,CategoryGroupBean[].class,
                 responseDownloadCategoryGroupListener(),mContext.errorListener()));
 
@@ -108,7 +110,8 @@ public class CategoryFragment extends Fragment {
             public void onResponse(CategoryGroupBean[] categoryGroupBeen) {
                 if (categoryGroupBeen != null) {
                     mGroupList = Utils.array2List(categoryGroupBeen);
-                    Log.e("error", "mgrouplist:" + mGroupList);
+
+                    Log.e(TAG, "mgrouplist:" + mGroupList);
                     for (int i = 0; i < mGroupList.size(); i++) {
                         int parentId = mGroupList.get(i).getId();
                         mChildList.add(i,new ArrayList<CategoryChildBean>());
@@ -119,12 +122,12 @@ public class CategoryFragment extends Fragment {
                                     .with(I.PAGE_ID,I.PAGE_ID_DEFAULT+"")
                                     .with(D.CategoryChild.PARENT_ID,parentId+"")
                                     .getRequestUrl(I.REQUEST_FIND_CATEGORY_CHILDREN);
-                            Log.e("error", "url=" + url);
+                            Log.e(TAG, "CHILDurl=" + url);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Log.e("error", "childpath" + ChildPath);
-                        Log.e("error", "parentId" + parentId);
+                        Log.e(TAG, "childpath" + ChildPath);
+                        Log.e(TAG, "parentId" + parentId);
                         mContext.executeRequest(new GsonRequest<CategoryChildBean[]>(url, CategoryChildBean[].class,
                                 responseDownloadCategoryChildListener(i), mContext.errorListener()));
 

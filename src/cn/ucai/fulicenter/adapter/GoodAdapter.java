@@ -36,6 +36,7 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     boolean isMore;
     int sortBy;
     FooterViewHolder mFooterViewHolder;
+
     public GoodAdapter(Context mContext,ArrayList<NewGoodBean> mNewGoodList,int sortBy) {
         this.mContext = mContext;
         this.sortBy = sortBy;
@@ -148,6 +149,7 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position == getItemCount() - 1) {
             mFooterViewHolder = (FooterViewHolder) holder;
+            mFooterViewHolder.mtvFootertext.setText(footerText);
             return;
         }
         GoodItemViewHolder holder1 = (GoodItemViewHolder)holder;
@@ -158,7 +160,8 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         holder1.ll_good.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mContext.startActivity(new Intent(mContext, GoodDetailActivity.class).putExtra(D.NewGood.KEY_GOODS_ID,good.getGoodsId()));
+                mContext.startActivity(new Intent(mContext, GoodDetailActivity.class)
+                        .putExtra(D.NewGood.KEY_GOODS_ID,good.getGoodsId()));
             }
         });
     }

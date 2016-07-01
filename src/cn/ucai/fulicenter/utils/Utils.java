@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import cn.ucai.fulicenter.task.UpdateCartTask;
  * Created by clawpo on 16/3/28.
  */
 public class Utils {
+    public static final String TAG = Utils.class.getName();
     public static String getPackageName(Context context){
         return context.getPackageName();
     }
@@ -74,6 +76,7 @@ public class Utils {
         for (CartBean cart : cartList) {
             count+=cart.getCount();
         }
+        Log.e(TAG, "count="+count);
         return count;
     }
 

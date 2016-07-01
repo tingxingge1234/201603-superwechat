@@ -15,16 +15,19 @@ import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.FuliCenterApplication;
+import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.fragment.BoutiqueFragment;
 import cn.ucai.fulicenter.fragment.CartFragment;
+import cn.ucai.fulicenter.fragment.CartTestFragment;
 import cn.ucai.fulicenter.fragment.CategoryFragment;
 import cn.ucai.fulicenter.fragment.NewGoodFragment;
 import cn.ucai.fulicenter.fragment.PersonalCenterFragment;
 import cn.ucai.fulicenter.utils.Utils;
-import cn.ucai.fulicenter.view.DisPlayUtils;
 
 public class fuliCenterMainActivity extends BaseActivity {
     public static final String TAG = "fuliCenterMainActivity";
@@ -37,14 +40,15 @@ public class fuliCenterMainActivity extends BaseActivity {
     BoutiqueFragment mBoutiqueFragment;
     CategoryFragment mCategoryFragment;
     CartFragment mCartFragment;
+    CartTestFragment mCartTestFragment;
     PersonalCenterFragment mPersonalCenterFragment;
     Fragment[] mFragments = new Fragment[5];
-    String update_cart_list;
+    ArrayList<CartBean> cart_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fuli_center_main);
-        update_cart_list = getIntent().getStringExtra("update_cart_list");
+        cart_list = FuliCenterApplication.getInstance().getCartList();
         initFragment();
         // 添加显示第一个fragment
         getSupportFragmentManager().beginTransaction()
@@ -64,6 +68,7 @@ public class fuliCenterMainActivity extends BaseActivity {
         mCategoryFragment= new CategoryFragment();
         mCartFragment = new CartFragment();
         mPersonalCenterFragment = new PersonalCenterFragment();
+        mCartTestFragment = new CartTestFragment();
         mFragments[0] = mNewGoodFragment;
         mFragments[1] = mBoutiqueFragment;
         mFragments[2] = mCategoryFragment;
@@ -113,7 +118,7 @@ public class fuliCenterMainActivity extends BaseActivity {
                 break;
         }
         if (currentTabIndex != index) {
-            Log.e(TAG, "cartlist=" + update_cart_list);
+            Log.e(TAG, "cartlist=" + cart_list);
             Log.e(TAG, "index" + index);
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(mFragments[currentTabIndex]);

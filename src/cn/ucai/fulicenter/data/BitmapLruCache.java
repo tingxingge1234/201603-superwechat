@@ -23,7 +23,7 @@ public class BitmapLruCache extends LruCache<String, Bitmap> implements ImageLoa
 			bitmap = RequestManager.getBitmap(url);
 			//如果磁盘缓存找到，添加到内存缓存中
 			if(bitmap!=null){
-				putBitmap(url,bitmap);
+				put(url,bitmap);
 			}
 		}
 		return bitmap;

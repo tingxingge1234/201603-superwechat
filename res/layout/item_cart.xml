@@ -10,7 +10,7 @@
         android:layout_height="100dp"
         android:background="#fff"
         >
-        <ImageView
+        <CheckBox
             android:id="@+id/iv_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
