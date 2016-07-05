@@ -231,7 +231,6 @@ public class ChatRoomDetailsActivity extends BaseActivity implements OnClickList
 	/**
 	 * 退出群组
 	 * 
-	 * @param groupId
 	 */
 	private void exitGrop() {
 		new Thread(new Runnable() {
@@ -245,6 +244,7 @@ public class ChatRoomDetailsActivity extends BaseActivity implements OnClickList
 							finish();
 							if(ChatActivity.activityInstance != null)
 							    ChatActivity.activityInstance.finish();
+
 						}
 					});
 				} catch (final Exception e) {

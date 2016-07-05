@@ -1,5 +1,6 @@
 package cn.ucai.superwechat.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -31,7 +32,7 @@ import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 public class SplashActivity extends BaseActivity {
 	private RelativeLayout rootLayout;
 	private TextView versionText;
-	Context context;
+	Activity context;
 	User user;
 	
 	private static final int sleepTime = 2000;
@@ -115,5 +116,11 @@ public class SplashActivity extends BaseActivity {
 			e.printStackTrace();
 			return st;
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		context.finish();
 	}
 }

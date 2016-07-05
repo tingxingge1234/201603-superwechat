@@ -396,4 +396,10 @@ public class LoginActivity extends BaseActivity {
 			return;
 		}
 	}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mContext.finish();
+    }
 }

@@ -125,7 +125,7 @@ import com.squareup.okhttp.internal.Util;
  * 
  */
 public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener{
-	private static final String TAG = "ChatActivity";
+	private static final String TAG = ChatActivity.class.getName();
 	private static final int REQUEST_CODE_EMPTY_HISTORY = 2;
 	public static final int REQUEST_CODE_CONTEXT_MENU = 3;
 	private static final int REQUEST_CODE_MAP = 4;
@@ -398,6 +398,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
 		if (chatType == CHATTYPE_SINGLE) { // 单聊
 			toChatUsername = getIntent().getStringExtra("userId");
+			Log.e(TAG, "setUpView-simple-toChatUserName=" + toChatUsername);
 			Map<String,RobotUser> robotMap=((DemoHXSDKHelper) HXSDKHelper.getInstance()).getRobotList();
 			if(robotMap!=null&&robotMap.containsKey(toChatUsername)){
 				isRobot = true;
@@ -417,7 +418,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			findViewById(R.id.container_voice_call).setVisibility(View.GONE);
 			findViewById(R.id.container_video_call).setVisibility(View.GONE);
 			toChatUsername = getIntent().getStringExtra("groupId");
-			Log.e(TAG, "toChatUserName=" + toChatUsername);
+			Log.e(TAG, "setUpView-group-toChatUserName=" + toChatUsername);
 			if(chatType == CHATTYPE_GROUP){
 			    onGroupViewCreation();
 			}else{ 
@@ -527,55 +528,37 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	
 	protected void onGroupViewCreation(){
 		members = SuperWeChatApplication.getInstance().getGroupMembers().get(toChatUsername);
-		group = EMGroupManager.getInstance().getGroup(toChatUsername);
 		if (members == null) {
-			members = new ArrayList<Member>();
 			new DownloadGroupMemberTask(ChatActivity.this,toChatUsername).execute();
-//			try {
-//				String path = new ApiParams()
-//                        .with(I.Member.GROUP_HX_ID, toChatUsername)
-//                        .getRequestUrl(I.REQUEST_DOWNLOAD_GROUP_MEMBERS_BY_HXID);
-//				executeRequest(new GsonRequest<Member[]>(path, Member[].class, responseGroupMembersByHxidListener(), errorListener()));
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
 		}
 
-		runOnUiThread(new Runnable() {
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				ArrayList<Group> groupList = SuperWeChatApplication.getInstance().getGroupList();
 				for (Group group : groupList) {
 					if (group.getMGroupHxid().equals(toChatUsername)) {
 						mGroup = group;
-						return;
+						Log.e(TAG, "mgroup=" + mGroup);
 					}
 				}
 			}
-		});
+		}).start();
 		Log.e("error", "chatactivity tochatusername" + toChatUsername);
 		group = EMGroupManager.getInstance().getGroup(toChatUsername);
+		Log.e(TAG, "onGroupViewCreation group=" + group);
 
 		if (group != null){
             ((TextView) findViewById(R.id.name)).setText(group.getGroupName());
         }else{
             ((TextView) findViewById(R.id.name)).setText(toChatUsername);
         }
-        
+		registerGroupMemberUpdate();
         // 监听当前会话的群聊解散被T事件
         groupListener = new GroupListener();
         EMGroupManager.getInstance().addGroupChangeListener(groupListener);
 	}
 
-//	private Response.Listener<Member[]> responseGroupMembersByHxidListener() {
-//		return new Response.Listener<Member[]>() {
-//			@Override
-//			public void onResponse(Member[] list) {
-//				members.addAll(Utils.array2List(list));
-//				adapter.notifyDataSetChanged();
-//			}
-//		};
-//	}
 
 	protected void onChatRoomViewCreation(){
         

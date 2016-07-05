@@ -15,6 +15,9 @@ dependencies {
     compile files('libs/okio-1.6.0.jar')
     compile files('libs/volley.jar')
     compile files('libs/okhttp-urlconnection-2.7.5.jar')
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 }
 
 android {
@@ -22,6 +25,9 @@ android {
     buildToolsVersion "23.0.3"
     defaultConfig{
         applicationId "cn.ucai.superwechat"
+    }
+    repositories {
+        maven { url 'http://repo1.maven.org/maven2' }
     }
     sourceSets {
         main {

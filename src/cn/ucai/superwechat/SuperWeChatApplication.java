@@ -17,6 +17,8 @@ import android.app.Application;
 import android.content.Context;
 
 import com.easemob.EMCallBack;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +30,7 @@ import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
 
 public class SuperWeChatApplication extends Application {
-	public static String SERVER_ROOT = "http://10.0.2.2:8080/SuperWeChatServer/Server";
+	public static String SERVER_ROOT = "http://192.168.8.12:8080/SuperWeChatServer/Server";
 	public static Context applicationContext;
 	private static SuperWeChatApplication instance;
 	// login user name
@@ -39,12 +41,18 @@ public class SuperWeChatApplication extends Application {
 	 */
 	public static String currentUserNick = "";
 	public static DemoHXSDKHelper hxSDKHelper = new DemoHXSDKHelper();
+	private RefWatcher refWatcher;
+
+	public static RefWatcher getRefWatcher(Context context) {
+		return instance.refWatcher;
+	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
         applicationContext = this;
         instance = this;
+		refWatcher = LeakCanary.install(this);
 		RequestManager.init(applicationContext);
         /**
          * this function will initialize the HuanXin SDK

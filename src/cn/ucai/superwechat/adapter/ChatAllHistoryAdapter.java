@@ -21,6 +21,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.Group;
 import cn.ucai.superwechat.utils.UserUtils;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -85,7 +87,7 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 			holder.unreadLabel = (TextView) convertView.findViewById(R.id.unread_msg_number);
 			holder.message = (TextView) convertView.findViewById(R.id.message);
 			holder.time = (TextView) convertView.findViewById(R.id.time);
-			holder.avatar = (NetworkImageView) convertView.findViewById(R.id.avatar);
+			holder.avatar = (NetworkImageView) convertView.findViewById(R.id.niv_chat_history_avatar);
 			holder.msgState = convertView.findViewById(R.id.msg_state);
 			holder.list_item_layout = (RelativeLayout) convertView.findViewById(R.id.list_item_layout);
 			convertView.setTag(holder);
@@ -102,10 +104,9 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		String username = conversation.getUserName();
 		if (conversation.getType() == EMConversationType.GroupChat) {
 			// 群聊消息，显示群聊头像
-//			holder.avatar.setImageResource(R.drawable.group_icon);
-			EMGroup group = EMGroupManager.getInstance().getGroup(username);
-			UserUtils.setGroupBeanAvatar(group.getGroupId(),holder.avatar);
-			holder.name.setText(group != null ? group.getGroupName() : username);
+			UserUtils.setGroupBeanAvatar(username,holder.avatar);
+			Group group = UserUtils.getGroupBeanFromHXID(username);
+			holder.name.setText(group != null ? group.getMGroupName() : username);
 		} else if(conversation.getType() == EMConversationType.ChatRoom){
 		    holder.avatar.setImageResource(R.drawable.group_icon);
             EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);

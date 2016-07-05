@@ -14,6 +14,7 @@ import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.Group;
 import cn.ucai.superwechat.bean.Member;
 import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
@@ -249,6 +250,17 @@ public class UserUtils {
 			pinyin = pinyin + HanziToPinyin.getInstance().get(s).get(0).target.toLowerCase();
 		}
 		return pinyin;
+	}
+	public static Group getGroupBeanFromHXID(String hxid) {
+		if(hxid!=null && !hxid.isEmpty()) {
+			ArrayList<Group> groupList = SuperWeChatApplication.getInstance().getGroupList();
+			for (Group group:groupList){
+				if(group.getMGroupHxid().equals(hxid)){
+					return group;
+				}
+			}
+		}
+		return null;
 	}
 
 }
